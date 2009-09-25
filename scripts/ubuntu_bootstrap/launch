@@ -1,0 +1,18 @@
+#/bin/bash
+
+ARGS_EXPECTED=2
+
+if [[ $# -ne $ARGS_EXPECTED ]]; then
+  echo "Usage: `basename $0` user host"
+  exit 1
+fi
+
+if [[ ! -x ./setup ]]; then
+  echo "Oops, [./setup] is not executable !"
+  echo "Going to try a [chmod 755 ./setup]"
+  chmod 755 ./setup
+fi
+
+scp -p ./setup $1@$2:~/setup
+
+ssh $1@$2 "~/setup"

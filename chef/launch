@@ -1,0 +1,11 @@
+#/bin/bash
+
+ARGS_EXPECTED=2
+
+if [[ $# -ne $ARGS_EXPECTED ]]; then
+  echo "Usage: `basename $0` user host"
+  exit 1
+fi
+
+scp -p ./solo.rb $1@$2:~/solo.rb
+scp -p ./gilmation_site.json $1@$2:~/gilmation_site_node.json
