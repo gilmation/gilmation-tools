@@ -1,1 +1,1 @@
-{ "recipes": "chef::server" }
+{ "recipes": [ "nagios", "gilmation_ee_server" ] }
