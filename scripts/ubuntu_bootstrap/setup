@@ -10,6 +10,8 @@ tar zxvf rubygems-1.3.4.tgz
 cd rubygems-1.3.4
 sudo ruby setup.rb
 sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem
+cd /tmp
+rm -r /tmp/rubygems*
 
 # Add opscode gems server
 sudo gem sources -a http://gems.opscode.com

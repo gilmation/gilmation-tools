@@ -1,1 +1,10 @@
-{ "recipes": [ "nagios", "gilmation_ee_server" ] }
+{ 
+  "gilmation": {
+    "webroot": "/var/www/sites/gilmation.com",
+    "deploy_user": "hgilmour",
+    "deploy_group": "hgilmour",
+    "deploy_mode": "755",
+    "domain": "com" 
+  },
+  "recipes": [ "gilmation_ee" ] 
+}
