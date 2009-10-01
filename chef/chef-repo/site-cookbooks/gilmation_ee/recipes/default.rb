@@ -21,6 +21,9 @@ include_recipe "apache2"
 include_recipe "php::php5"
 include_recipe "mysql::server"
 
+# Ensure that lvm is up to date
+include_recipe "lvm"
+
 # Now do the Gilmation specific stuff
 
 # Create the deployment root directory

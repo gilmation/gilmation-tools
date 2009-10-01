@@ -8,16 +8,15 @@ if [[ $# -ne $ARGS_EXPECTED ]]; then
 fi
 
 ssh $1@$2 "sudo mkdir -pm 755 /etc/gilmation; sudo mkdir -pm 755 /etc/chef"
-scp -p ./chef-repo/config/solo.rb ./gilmation_site_node.json $1@$2:~
-#scp -p ./gilmation_site_node.json $1@$2:~/gilmation_site_node.json
-ssh $1@$2 "sudo mv ~/solo.rb /etc/chef; sudo mv ~/gilmation_site_node.json /etc/chef"
+
+# In the current version of tar for mac os x 10.5 there is no substitution option to remove 
+# directories from the output of tar archives, in 10.6 tar has a [-s pattern] option.
+cp -p ./chef-repo/config/solo.rb .
+tar -zc ./solo.rb ./gilmation_site_node.json | ssh $1@$2 "cd /etc/chef; sudo tar -zx"
+rm ./solo.rb
 
 cd chef-repo
-tar -zcvf chef-solo.tar.gz ./cookbooks ./site-cookbooks
-chmod 755 chef-solo.tar.gz
-scp -p ./chef-solo.tar.gz $1@$2:~/chef-solo.tar.gz
-ssh $1@$2 "sudo mv ~/chef-solo.tar.gz /etc/chef; cd /etc/chef; sudo tar -xvzf /etc/chef/chef-solo.tar.gz; sudo rm /etc/chef/chef-solo.tar.gz"
-rm chef-solo.tar.gz
+tar -zc ./cookbooks ./site-cookbooks | ssh $1@$2 "cd /etc/chef; sudo tar -zx"
 cd -
 
 ssh $1@$2 "sudo chef-solo -j /etc/chef/gilmation_site_node.json"
