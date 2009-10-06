@@ -181,3 +181,15 @@ include_recipe "apache2::mod_log_config" if platform?("centos", "redhat", "suse"
 service "apache2" do
   action :start
 end
+
+file "#{node[:apache][:dir]}/sites-enabled/000-default" do
+  action :delete
+end
+
+file "#{node[:apache][:dir]}/sites-available/default" do
+  action :delete
+end
+
+file "#{node[:apache][:dir]}/sites-available/default-ssl" do
+  action :delete
+end
