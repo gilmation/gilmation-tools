@@ -18,6 +18,7 @@
 #
 
 include_recipe "apache2"
+include_recipe "apache2::mod_php5"
 include_recipe "php::php5"
 include_recipe "mysql::server"
 
@@ -47,10 +48,12 @@ directories.each do |dir|
 end
 
 # Add gilmation as a virtual host in Apache
-template "/etc/gilmation/apache2.conf" do
-  source "apache2.conf.erb"
+template "/etc/apache2/sites-available/gilmation-site" do
+  source "gilmation-site.erb"
+  owner "root"
+  group "root"
+  mode 0644
+  notifies :restart, resources(:service => "apache2") 
 end
 
-apache_site "gilmation" do
-  config_path "/etc/gilmation/apache2.conf"
-end
+apache_site "gilmation-site"

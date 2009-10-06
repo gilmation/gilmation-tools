@@ -4,6 +4,7 @@
     "deploy_user": "hgilmour",
     "deploy_group": "hgilmour",
     "deploy_mode": "755",
+    "domain_name": "gilmation",
     "domain": "com" 
   },
   "recipes": [ "gilmation_ee" ] 
