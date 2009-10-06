@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+	<title>File: apache2_module_conf_generate.pl [RDoc Documentation]</title>
+
+	<link type="text/css" media="screen" href="../../rdoc.css" rel="stylesheet" />
+
+	<script src="../../js/jquery.js" type="text/javascript" 
+		charset="utf-8"></script>
+	<script src="../../js/thickbox-compressed.js" type="text/javascript" 
+		charset="utf-8"></script>
+	<script src="../../js/quicksearch.js" type="text/javascript" 
+		charset="utf-8"></script>
+	<script src="../../js/darkfish.js" type="text/javascript" 
+		charset="utf-8"></script>
+</head>
+	
+<body class="file file-popup">
+	<div id="metadata">
+		<dl>
+			<dt class="modified-date">Last Modified</dt>
+			<dd class="modified-date">Tue Sep 29 14:40:32 +0200 2009</dd>
+			
+			
+			
+			
+		</dl>
+
+		
+		<div class="description">
+			<h2>Description</h2>
+			<p>
+Generates Ubuntu style module.load files.
+</p>
+<p>
+./apache2_module_conf_generate.pl /usr/lib64/httpd/modules
+/etc/httpd/mods-available
+</p>
+<p>
+ARGV[0] is the apache modules directory, ARGV[1] is where you want
+&#8216;em.
+</p>
+<p>
+use File::Find;
+</p>
+<p>
+use strict; use warnings;
+</p>
+<p>
+die &#8220;Must have &#8216;/path/to/modules&#8217; and
+&#8216;/path/to/modules.load&#8217;&#8220;
+</p>
+<pre>
+  unless $ARGV[0] &amp;&amp; $ARGV[1];
+</pre>
+<p>
+find(
+</p>
+<pre>
+  {
+    wanted =&gt; sub {
+      return 1 if $File::Find::name !~ /\.so$/;
+      my $modfile = $_;
+      $modfile =~ /(lib|mod_)(.+)\.so$/;
+      my $modname  = $2;
+      my $filename = &quot;$ARGV[1]/$modname.load&quot;;
+      unless ( -f $filename ) {
+        open( FILE, &quot;&gt;&quot;, $filename ) or die &quot;Cannot open $filename&quot;;
+        print FILE &quot;LoadModule &quot; . $modname . &quot;_module $File::Find::name\n&quot;;
+        close(FILE);
+      }
+    },
+    follow =&gt; 1,
+  },
+  $ARGV[0]
+</pre>
+<p>
+);
+</p>
+<p>
+exit 0;
+</p>
+
+		</div>
+		
+	</div>
+</body>
+</html>
+

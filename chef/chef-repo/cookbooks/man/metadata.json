@@ -1,0 +1,43 @@
+{
+  "description": "Installs man-db",
+  "replacing": {
+
+  },
+  "recipes": {
+    "man": ""
+  },
+  "platforms": {
+    "ubuntu": [
+
+    ],
+    "debian": [
+
+    ]
+  },
+  "maintainer": "Opscode, Inc.",
+  "version": "0.7.0",
+  "recommendations": {
+
+  },
+  "name": "man",
+  "maintainer_email": "cookbooks@opscode.com",
+  "attributes": {
+
+  },
+  "suggestions": {
+
+  },
+  "license": "Apache 2.0",
+  "conflicting": {
+
+  },
+  "dependencies": {
+
+  },
+  "providing": {
+    "man": [
+
+    ]
+  },
+  "long_description": ""
+}

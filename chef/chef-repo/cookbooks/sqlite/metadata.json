@@ -1,0 +1,38 @@
+{
+  "description": "Installs sqlite",
+  "replacing": {
+
+  },
+  "recipes": {
+    "sqlite": ""
+  },
+  "platforms": {
+
+  },
+  "maintainer": "Opscode, Inc.",
+  "version": "0.7.0",
+  "recommendations": {
+
+  },
+  "name": "sqlite",
+  "maintainer_email": "cookbooks@opscode.com",
+  "attributes": {
+
+  },
+  "suggestions": {
+
+  },
+  "license": "Apache 2.0",
+  "conflicting": {
+
+  },
+  "dependencies": {
+
+  },
+  "providing": {
+    "sqlite": [
+
+    ]
+  },
+  "long_description": ""
+}

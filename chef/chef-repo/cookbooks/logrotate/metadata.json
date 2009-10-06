@@ -1,0 +1,38 @@
+{
+  "description": "Installs logrotate",
+  "replacing": {
+
+  },
+  "recipes": {
+    "logrotate": ""
+  },
+  "platforms": {
+
+  },
+  "maintainer": "Opscode, Inc.",
+  "version": "0.7.0",
+  "recommendations": {
+
+  },
+  "name": "logrotate",
+  "maintainer_email": "cookbooks@opscode.com",
+  "attributes": {
+
+  },
+  "suggestions": {
+
+  },
+  "license": "Apache 2.0",
+  "conflicting": {
+
+  },
+  "dependencies": {
+
+  },
+  "providing": {
+    "logrotate": [
+
+    ]
+  },
+  "long_description": ""
+}

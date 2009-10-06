@@ -1,0 +1,38 @@
+{
+  "description": "Installs rsync",
+  "replacing": {
+
+  },
+  "recipes": {
+    "rsync": ""
+  },
+  "platforms": {
+
+  },
+  "maintainer": "Opscode, Inc.",
+  "version": "0.7.0",
+  "recommendations": {
+
+  },
+  "name": "rsync",
+  "maintainer_email": "cookbooks@opscode.com",
+  "attributes": {
+
+  },
+  "suggestions": {
+
+  },
+  "license": "Apache 2.0",
+  "conflicting": {
+
+  },
+  "dependencies": {
+
+  },
+  "providing": {
+    "rsync": [
+
+    ]
+  },
+  "long_description": ""
+}

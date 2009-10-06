@@ -1,0 +1,38 @@
+{
+  "description": "Installs lvm2 package",
+  "replacing": {
+
+  },
+  "recipes": {
+    "lvm": ""
+  },
+  "platforms": {
+
+  },
+  "maintainer": "Opscode, Inc.",
+  "version": "0.7.0",
+  "recommendations": {
+
+  },
+  "name": "lvm",
+  "maintainer_email": "cookbooks@opscode.com",
+  "attributes": {
+
+  },
+  "suggestions": {
+
+  },
+  "license": "Apache 2.0",
+  "conflicting": {
+
+  },
+  "dependencies": {
+
+  },
+  "providing": {
+    "lvm": [
+
+    ]
+  },
+  "long_description": ""
+}

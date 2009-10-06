@@ -1,0 +1,38 @@
+{
+  "description": "Installs emacs",
+  "replacing": {
+
+  },
+  "recipes": {
+    "emacs": ""
+  },
+  "platforms": {
+
+  },
+  "maintainer": "Opscode, Inc.",
+  "version": "0.7.0",
+  "recommendations": {
+
+  },
+  "name": "emacs",
+  "maintainer_email": "cookbooks@opscode.com",
+  "attributes": {
+
+  },
+  "suggestions": {
+
+  },
+  "license": "Apache 2.0",
+  "conflicting": {
+
+  },
+  "dependencies": {
+
+  },
+  "providing": {
+    "emacs": [
+
+    ]
+  },
+  "long_description": ""
+}
