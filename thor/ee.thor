@@ -10,69 +10,77 @@ include FileUtils::Verbose
 class Ee < Thor
   map "-c" => :list_config
 
-  #
-  # Variables
-  #
-  @shared_dir = :shared
-  @releases_dir = :releases
-  @current_release = :current
-  @this_release = Time.now.strftime("%Y%m%d_%H%M")
-
-  # shared image dirs
-  @shared_image_dirs = [ "images/avatars/uploads", "images/captchas",
-    "images/member_photos", "images/pm_attachments",
-  "images/signature_attachments", "images/uploads" ]
-
-  # add the forum_attachments directory to the shared_image_dirs list (comment this if you are not using the forum module)
-  @shared_image_dirs << "images/forum_attachments"
-
-  desc "Print the configuration that is being / going to be used"
-  method_options(:config_file, :default => "config.yml", :type => :string, :aliases => "-conf")
+  desc "list_config", "Output the configuration that we have loaded from file"
+  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
   def list_config
+
+    #invoke :ee_config
+
+    puts "Config file values are"
     ee_config.each do | key, value |
-      puts "[#{key}] is [#{value}]"
+     show_string_hash(key, value)
     end
     puts "######"
     puts "Shared image dirs are"
-    shared_image_dirs.each do | dir |
+    @shared_image_dirs.each do | dir |
       puts "[#{dir}]"
     end
   end
 
-  desc "Load the configuration file that we need to be able to do anything",
-  "Option: -conf=filename or path to file (this option will concatenate environmental variable EE_HOME",
-  " unless a file can be found for the input)"
-  method_options(:config_file, :default => "config.yml", :type => :string, :aliases => "-conf")
+  desc "ee_config",
+  "Get the configuration, filename or path (concatenates the environmental variable EE_HOME unless filename can be found)"
+  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
   def ee_config
 
-    # config
-    return @ee_config if @@ee_config
+    # return the config if it already exists
+    return @ee_config if @ee_config
 
-    # else
+    # else create the config if it doesn't already exist
+
+    #
+    # Variables
+    #
+    @shared_dir = :shared
+    @releases_dir = :releases
+    @current_release = :current
+    @this_release = Time.now.strftime("%Y%m%d_%H%M")
+
+    # shared image dirs
+    @shared_image_dirs = [ "images/avatars/uploads", "images/captchas",
+      "images/member_photos", "images/pm_attachments",
+    "images/signature_attachments", "images/uploads" ]
+
+    # add the forum_attachments directory to the shared_image_dirs list (comment this if you are not using the forum module)
+    @shared_image_dirs << "images/forum_attachments"
+
+    # Get the config file
     ee_config_file = File.exists?(options[:config_file]) && options[:config_file] ||
-    File.join(ENV['EE_HOME'], options[:config_file])
+    File.join(ENV['EE_HOME'], 'config', options[:config_file])
 
-    config = YAML.load_file(ee_config_file)
-    #config = YAML.load_file("./config/config.yml")
-    @@ee_config = config['local']
-    @deploy_root = config_node['deploy']['root']
-    @ee_system = config_node['deploy']['system_name']
-    @ee_dir = ENV[:EE_HOME] || config_node['deploy']['ee_dir']
+    puts "Using config file [#{ee_config_file}]"
 
-    # assets dir
-    @assets_dir = "#{deploy_root}/#{shared_dir}/assets"
+    @ee_config = YAML.load_file(ee_config_file)
+    @deploy_root = @ee_config['deploy']['root']
+    @ee_system = @ee_config['deploy']['system_name']
+    @ee_dir = File.join(ENV['EE_HOME'], @ee_config['deploy']['ee_dir'])
+
+    ## assets dir
+    @assets_dir = "#{@deploy_root}/#{@shared_dir}/assets"
 
     return @ee_config
   end
 
-  desc "Deploy the development Expression Engine install to the local web deploy root (as per the configuration)"
-  method_options(:config_file, :default => "config.yml", :type => :string, :aliases => "-conf")
+  desc "deploy_local", "Development Expression Engine install to the local web deploy root (as per the configuration)"
+  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
   def deploy_local
+    invoke :ee_config
+    invoke :check_create_directories
+    invoke :copy_files
     invoke :create_links
     invoke :check_ee_config
   end
 
-  desc "Check required local directories and if they don't exist create them"
+  desc "check_create_directories", "If they don't exist create them"
   def check_create_directories
 
     # if shared sub-directories do not exist create them and copy in the default index.html file
@@ -81,7 +89,7 @@ class Ee < Thor
       # make sure that the permissions are ok
       chmod_R(0777, "#{@assets_dir}/#{dir}")
       # add an index.html file for anyone that accesses this directory directly but don't set the permissions to wide open
-      cp("./#{@ee_dir}/images/index.html", "#{@assets_dir}/#{dir}") unless File.exists?("#{@assets_dir}/#{dir}/index.html")
+      cp("#{@ee_dir}/images/index.html", "#{@assets_dir}/#{dir}") unless File.exists?("#{@assets_dir}/#{dir}/index.html")
     end
 
     # if shared config directory does not exist then create it
@@ -91,28 +99,29 @@ class Ee < Thor
     mkdir_p("#{@deploy_root}/#{@releases_dir}/#{@this_release}")
   end
 
-  desc "Copy the contents of the directory refered to by the ee_dir variable to the this_release directory and setup the permissions"
+  desc "copy_files", "Copy the contents of the directory refered to by the ee_dir variable to the this_release directory and setup the permissions"
   def copy_files
-    cp_r(FileList.new("./#{@ee_dir}/*", "./#{@ee_dir}/.htaccess"), "#{@deploy_root}/#{@releases_dir}/#{@this_release}")
+    cp_r(FileList.new("#{@ee_dir}/*", "#{@ee_dir}/.htaccess"), "#{@deploy_root}/#{@releases_dir}/#{@this_release}")
 
     # setup the correct permissions
-    chmod(0666, "#{deploy_root}/#{releases_dir}/#{this_release}/path.php")
-    chmod(0777, "#{deploy_root}/#{releases_dir}/#{this_release}/#{ee_system}/cache/")
-    chmod(0666, "#{deploy_root}/#{releases_dir}/#{this_release}/#{ee_system}/config_bak.php")
-    chmod(0666, "#{deploy_root}/#{releases_dir}/#{this_release}/#{ee_system}/translations")
+    chmod(0666, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/path.php")
+    chmod(0777, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/cache/")
+    chmod(0666, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/config_bak.php")
+    #chmod(0755, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/translations")
   end
 
-  desc ""
+  desc "check_ee_config", "Make sure that the config files exist and are up to date"
   def check_ee_config
 
   end
 
-  desc "Deploy the local configuration - not stored in git"
+  desc "deploy_local_config", "This is a generated configuration and should not be stored in git"
   def deploy_local_config
 
   end
 
-  desc "Create the links needed to set up the current deployment and make the shared files available to it"
+  desc "create_links",
+  "Create the links needed to set up the current deployment and make the shared files available to it"
   def create_links
     # link to the deployed code
     File.exists?("#{@deploy_root}/#{@current_release}") && rm("#{@deploy_root}/#{@current_release}")
@@ -122,22 +131,77 @@ class Ee < Thor
     #ln_s("#{@deploy_root}/#{@shared_dir}/config/config.php", "#{@deploy_root}/#{@current_release}/#{@ee_system}/config.php")
 
     # standard image upload directories
-    shared_image_dirs.each do | dir |
+    @shared_image_dirs.each do | dir |
       ln_s("#{@assets_dir}/#{dir}", "#{@deploy_root}/#{@current_release}/#{dir}")
     end
   end
 
-  desc "Delete the shared files that should not appear in the source code repository"
+  desc "delete_shared_files", "Delete the files that should not appear in the source code repository"
   def delete_shared_files
-    shared_image_dirs.each do | dir |
+    @shared_image_dirs.each do | dir |
       rm_r("#{@ee_dir}/#{dir}")
     end
   end
 
-  desc "Clear the ExpressionEngine caches if they exist"
+  desc "clear_cache", "Clear the caches if they exist"
   def clear_cache
     File.exists?("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/db_cache") && rm_r("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/db_cache/*")
     File.exists?("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/page_cache") && rm_r("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/page_cache/*")
     File.exists?("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/magpie_cache") && rm_r("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/magpie_cache/*")
+  end
+
+  desc("manage_deployments", "Given a number, defaults to 5, save the most recent $number of deployments and delete the rest")
+  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-cf")
+  def manage_deployments(number = 5)
+
+    case(number)
+    when String then number = number.to_i
+    end
+
+    if(number <= 0)
+      throw('Cannot process a zero or negative number of deployments')
+    end
+
+    #get the config info
+    invoke :ee_config
+
+    #get the list of ordered deployment dirs
+    deployments = Dir.glob("#{@deploy_root}/#{@releases_dir}/*").sort{|a,b| File.mtime(b) <=> File.mtime(a)}
+
+    if(!deployments)
+      puts("There are no deployments in [#{@deploy_root}/#{@releases_dir}/*]")
+      return 
+    end
+    
+    if(deployments.length <= number)
+      puts("No deployments to delete")
+      return
+    end
+
+    # get rid of the number of deployments that we don't want to delete
+    number = number-1 unless number == 1
+    deployments.slice!(0, number)
+    puts("There are [#{deployments.length}] deployments to be deleted")
+
+    #make sure that we don't delete the one current is pointing to
+    if(deployments.delete(File.readlink("#{@deploy_root}/#{@current_release}")))
+      puts("Oops, the current link is pointing to a file that's in the list of deployments to delete")
+      puts("Removed this deployment from the liquidation list !")
+    end
+
+    if(deployments.length != 0)
+      puts("Deleting [#{deployments.length}] deployments")
+      FileUtils.rm_rf(deployments, :secure => true)
+    else 
+      puts("Not deleting any deployments")
+    end
+  end
+
+  private
+  def show_string_hash(key, string_or_hash)
+      case string_or_hash
+      when String then puts "[#{key}] is [#{string_or_hash}]"
+      when Hash then string_or_hash.each { | key, value | show_string_hash(key, value) }
+      end
   end
 end
