@@ -57,10 +57,10 @@ class S3 < Thor
   end
 
   # Manage the contents of the given bucket
-  # Save on the $number of key/values in this bucket, ordered by date
+  # Save the $number of key/values in this bucket, ordered by date, delete the rest
   # @param bucket_name [String] the bucket where the information is to be stored
   # @param number [int] the number of elements (key/values) to save
-  desc("manage_uploads", "")
+  desc("manage_uploads", "Save the $number of key/values in this bucket, ordered by date, delete the rest")
   def manage_uploads(bucket_name, number)
 
     # Connect

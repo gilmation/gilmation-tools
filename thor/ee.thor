@@ -1,5 +1,4 @@
 require 'yaml'
-require 'right_aws'
 require 'fileutils'
 include FileUtils::Verbose
 
@@ -195,6 +194,13 @@ class Ee < Thor
     else 
       puts("Not deleting any deployments")
     end
+  end
+
+  desc("store_mysql_dump_s3", "Given a number, defaults to 5, save the most recent $number of deployments and delete the rest")
+  def store_mysql_dump_s3
+    @backups_bucket_name = 'gilmation_development_db_backups'
+    invoke ee_config
+    invoke gilmation:store_mysql_dump_s3 
   end
 
   private

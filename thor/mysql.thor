@@ -10,10 +10,13 @@ class Mysql < Thor
   # in the second argument.
   # @param this_release [String] the release associated with this request
   # @param config [String] the location of the Database configuration information 
-  desc("", "")
-  def create_mysql_dump(this_release, config)
+  desc("create_mysql_dump", "Generate a mysql dump file and store it in file_name for the database config given")
+  def create_mysql_dump(file_name, config)
 
-    # load the config
+    # load the config if necessary
+    case config
+    when String then config = load_config(config)
+    end
 
     # db user / password
     db_name = config['db']['name']
@@ -25,7 +28,7 @@ class Mysql < Thor
     mkdir_p(output_dir)
 
     # define the dump file
-    dump_file = "#{output_dir}/#{this_release}_ee_dump.sql.gz"
+    dump_file = "#{output_dir}/#{file_name}_ee_dump.sql.gz"
 
     # build the mysqldump command
     cmd = "mysqldump --quick --single-transaction --create-options -u#{db_admin_user}"
@@ -40,10 +43,26 @@ class Mysql < Thor
     return dump_file
   end
 
-  desc("", "") 
+  desc("load_mysql_dump", "Given a mysql dump_file load it into the database described by the config parameter") 
   def load_mysql_dump(dump_file, config) 
 
     # load the config
+    case config
+    when String then config = load_config(config)
+    end
 
+    # build the msqldump load command
+    #cmd =
+
+  end
+
+  private 
+  # Load the config
+  # @param config [String] the absolute path to a config file
+  def load_config(config)
+    # load the config
+    throw "Cannot process config file [#{config}]" unless config && File.exists?(config)
+    loaded_config = YAML.load_file(config)
+    throw "Cannot proceed with loaded config file [#{loaded_config}]" if loaded_config.nil? || loaded_config.empty? 
   end
 end
