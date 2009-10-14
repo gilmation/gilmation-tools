@@ -25,6 +25,9 @@ include_recipe "mysql::server"
 # Ensure that lvm is up to date
 include_recipe "lvm"
 
+# Make sure that we create the users that we need
+include_recipe "user"
+
 # Now do the Gilmation specific stuff
 
 # Create the deployment root directory

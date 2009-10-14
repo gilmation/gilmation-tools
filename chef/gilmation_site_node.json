@@ -7,5 +7,14 @@
     "domain_name": "gilmation",
     "domain": "com" 
   },
-  "recipes": [ "gilmation_ee" ] 
+  "recipes": [ "gilmation_ee" ],
+  "users": [{
+    "group": "deploy",
+    "gid": 513,
+    "user": "deploy",
+    "comment": "Deployment User",
+    "home": "/home/deploy",
+    "uid": "513",
+    "cookbook": "gilmation_ee"
+  }]
 }
