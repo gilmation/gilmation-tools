@@ -1,13 +1,13 @@
 require 'yaml'
 require 'right_aws'
 require 'fileutils'
-include FileUtils::Verbose
 
 #
 # Utility methods for accessing and manipulating 
 # Amazon s3
 #
 class S3 < Thor
+  include FileUtils::Verbose
 
   # Upload the file to S3 for this_release.  The configuration
   # of S3 is contained in the users home directory (see the private connect 

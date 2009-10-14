@@ -1,23 +1,24 @@
 require 'yaml'
 require 'fileutils'
-include FileUtils::Verbose
+require File.join(File.dirname(__FILE__), 'utils.rb')
 
 #
 # Methods for the configuration and deployment of an
 # Expression Engine instance
 #
 class Ee < Thor
+  include FileUtils::Verbose
+  include Gilm::Utils
+
   map "-c" => :list_config
 
   desc "list_config", "Output the configuration that we have loaded from file"
   method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
   def list_config
 
-    #invoke :ee_config
-
     puts "Config file values are"
     ee_config.each do | key, value |
-     show_string_hash(key, value)
+      show_string_hash(key, value)
     end
     puts "######"
     puts "Shared image dirs are"
@@ -43,6 +44,7 @@ class Ee < Thor
     @releases_dir = :releases
     @current_release = :current
     @this_release = Time.now.strftime("%Y%m%d_%H%M")
+    @backups_bucket_name = 'gilmation_development_db_backups'
 
     # shared image dirs
     @shared_image_dirs = [ "images/avatars/uploads", "images/captchas",
@@ -53,7 +55,7 @@ class Ee < Thor
     @shared_image_dirs << "images/forum_attachments"
 
     # Get the config file
-    ee_config_file = File.exists?(options[:config_file]) && options[:config_file] ||
+    ee_config_file = options[:config_file] && File.exists?(options[:config_file]) ||
     File.join(ENV['EE_HOME'], 'config', options[:config_file])
 
     puts "Using config file [#{ee_config_file}]"
@@ -98,7 +100,8 @@ class Ee < Thor
     mkdir_p("#{@deploy_root}/#{@releases_dir}/#{@this_release}")
   end
 
-  desc "copy_files", "Copy the contents of the directory refered to by the ee_dir variable to the this_release directory and setup the permissions"
+  desc("copy_files", 
+    "Copy the contents of the directory refered to by the ee_dir variable to the this_release directory and setup the permissions")
   def copy_files
     cp_r(FileList.new("#{@ee_dir}/*", "#{@ee_dir}/.htaccess"), "#{@deploy_root}/#{@releases_dir}/#{@this_release}")
 
@@ -119,8 +122,8 @@ class Ee < Thor
 
   end
 
-  desc "create_links",
-  "Create the links needed to set up the current deployment and make the shared files available to it"
+  desc("create_links",
+  "Create the links needed to set up the current deployment and make the shared files available to it")
   def create_links
     # link to the deployed code
     File.exists?("#{@deploy_root}/#{@current_release}") && rm("#{@deploy_root}/#{@current_release}")
@@ -135,14 +138,14 @@ class Ee < Thor
     end
   end
 
-  desc "delete_shared_files", "Delete the files that should not appear in the source code repository"
+  desc("delete_shared_files", "Delete the files that should not appear in the source code repository")
   def delete_shared_files
     @shared_image_dirs.each do | dir |
       rm_r("#{@ee_dir}/#{dir}")
     end
   end
 
-  desc "clear_cache", "Clear the caches if they exist"
+  desc("clear_cache", "Clear the caches if they exist")
   def clear_cache
     File.exists?("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/db_cache") && rm_r("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/db_cache/*")
     File.exists?("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/page_cache") && rm_r("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/page_cache/*")
@@ -150,7 +153,7 @@ class Ee < Thor
   end
 
   desc("manage_deployments", "Given a number, defaults to 5, save the most recent $number of deployments and delete the rest")
-  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-cf")
+  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
   def manage_deployments(number = 5)
 
     case(number)
@@ -196,18 +199,10 @@ class Ee < Thor
     end
   end
 
-  desc("store_mysql_dump_s3", "Given a number, defaults to 5, save the most recent $number of deployments and delete the rest")
+  desc("store_mysql_dump_s3", "Store a mysqldump file in s3 for this Database and user")
+  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
   def store_mysql_dump_s3
-    @backups_bucket_name = 'gilmation_development_db_backups'
-    invoke ee_config
-    invoke gilmation:store_mysql_dump_s3 
-  end
-
-  private
-  def show_string_hash(key, string_or_hash)
-      case string_or_hash
-      when String then puts "[#{key}] is [#{string_or_hash}]"
-      when Hash then string_or_hash.each { | key, value | show_string_hash(key, value) }
-      end
+    invoke(:ee_config)
+    invoke("gilmation:store_mysql_dump_s3", [ @this_release, @backups_bucket_name, @ee_config ]) 
   end
 end

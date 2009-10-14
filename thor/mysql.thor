@@ -1,10 +1,14 @@
 require 'yaml'
+require 'fileutils'
+require File.join(File.dirname(__FILE__), 'utils.rb')
 
 #
 # Methods for working with MySQL
 # Databases
 #
 class Mysql < Thor
+  include FileUtils::Verbose
+  include Gilm::Utils
 
   # Generate a mysql dump file.  The configuration of the Database is contained
   # in the second argument.
@@ -54,15 +58,5 @@ class Mysql < Thor
     # build the msqldump load command
     #cmd =
 
-  end
-
-  private 
-  # Load the config
-  # @param config [String] the absolute path to a config file
-  def load_config(config)
-    # load the config
-    throw "Cannot process config file [#{config}]" unless config && File.exists?(config)
-    loaded_config = YAML.load_file(config)
-    throw "Cannot proceed with loaded config file [#{loaded_config}]" if loaded_config.nil? || loaded_config.empty? 
   end
 end
