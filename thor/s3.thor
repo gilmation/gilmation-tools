@@ -9,6 +9,8 @@ require 'fileutils'
 class S3 < Thor
   include FileUtils::Verbose
 
+  S3_DOWNLOAD_DIR = '/tmp/s3_downloads'
+
   # Upload the file to S3 for this_release.  The configuration
   # of S3 is contained in the users home directory (see the private connect 
   # method for details)
@@ -16,32 +18,60 @@ class S3 < Thor
   # @param bucket_name [String] the bucket where the information is to be stored
   # @param file [String] the file (absolute path) for request
   desc("upload_file", "Store the file with the given key and bucket in this users S3 repo")
+  method_option(:keep, :type => :boolean, :default => false)
   def upload_file(key, bucket_name, file)
 
     # create the bucket - if it doesn't already exist
     remote_bucket = RightAws::S3::Bucket.create(connect, "#{bucket_name}", true)
 
     # add this file
-    remote_bucket.put(key, IO.read(file))
+    remote_bucket.put(key, File.read(file))
   
     # have a look at the keys that are already present
     remote_bucket.keys.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key}]" }
-    rm_r(file)
+
+    # delete the uploaded file
+    rm_r(file) unless options.keep?
   end
 
-  # Get the file from S3 with the given key.  The configuration
+  # Get the file from S3 with the given key.  If the key is nil then 
+  # ask the user which key they would like to use.  The configuration
   # of S3 is contained in the users home directory (see the private connect 
   # method for details)
-  # @param key [String] the release associated with this request
   # @param bucket_name [String] the bucket where the information is stored
-  desc("get_file", "Get the file with the given key and bucket from this users S3 repo")
-  def get_file(key, bucket_name)
+  # @param key [String] the release associated with this request
+  desc("get_file", "Get the file with the (key) and bucket from this users S3 repo")
+  def get_file(bucket_name, key=nil)
 
     # create the bucket - if it doesn't already exist
     remote_bucket = RightAws::S3::Bucket.create(connect, "#{bucket_name}", true)
 
-    # get this file
-    return remote_bucket.get(key)
+    # blank line
+    puts
+
+    keys_table = []
+    remote_bucket.keys.each_with_index do | key, index |
+      keys_table << [ "(#{index + 1})", key ]
+    end
+    print_table(keys_table)
+
+    number = ask("Select the number of the key you would like to retrieve: ", Thor::Shell::Color::BLUE)
+    throw "Invalid number #{number} chosen, cannot continue" unless number =~ /^[0-9]*$/
+    throw "Number #{number} is out of range, cannot continue" if number.to_i < 1 || number.to_i > keys_table.length 
+    number = number.to_i - 1
+
+    # get the file
+    puts("Getting object for key #{remote_bucket.keys[number]}")
+    file_download = remote_bucket.get(remote_bucket.keys[number])
+
+    mkdir_p(S3_DOWNLOAD_DIR)
+    output_file = File.join(S3_DOWNLOAD_DIR, remote_bucket.keys[number].to_s)
+    File.open(output_file, "w") do | file |
+      file.print(file_download)
+    end
+    puts("Retrieved file stored in [#{output_file}]")
+    
+    return output_file
   end
 
   # List the contents of the given bucket
@@ -61,14 +91,34 @@ class S3 < Thor
   # @param bucket_name [String] the bucket where the information is to be stored
   # @param number [int] the number of elements (key/values) to save
   desc("manage_uploads", "Save the $number of key/values in this bucket, ordered by date, delete the rest")
-  def manage_uploads(bucket_name, number)
+  def manage_uploads(bucket_name, number=5)
+
+    if number == 0
+      puts("It is not possible to delete all the backups you need to do it manually")
+      number = 1
+    end
 
     # Connect
     s3 = connect
 
-    # Get keys ordered by date
+    # create the bucket - if it doesn't already exist
+    remote_bucket = RightAws::S3::Bucket.create(connect, "#{bucket_name}", true)
 
+    # Get keys ordered by date
     # save only $number key/values
+    key_list = remote_bucket.keys
+
+    if(key_list.empty? || key_list.size < number)
+      puts("The number of keys is [#{key_list.size}], nothing to delete")
+    end 
+
+    puts("There are [#{key_list.size}] keys, saving the last [#{number}]")
+    key_list.slice!(key_list.size-number, key_list.size)
+
+    key_list.each do | key |
+      puts("Deleting key [#{key}]")
+      remote_bucket.delete(key)
+    end
 
   end
 

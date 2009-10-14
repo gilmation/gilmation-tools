@@ -10,6 +10,8 @@ class Mysql < Thor
   include FileUtils::Verbose
   include Gilm::Utils
 
+  MYSQL_BACKUP_DIR = "/tmp/mysql_backups"
+
   # Generate a mysql dump file.  The configuration of the Database is contained
   # in the second argument.
   # @param this_release [String] the release associated with this request
@@ -23,21 +25,18 @@ class Mysql < Thor
     end
 
     # db user / password
-    db_name = config['db']['name']
-    db_admin_user = config['db']['admin_user']
-    db_admin_password = config['db']['admin_password']
-    output_dir = "/tmp/mysql_backups"
+    process_config(config)
 
     # create the output directory
-    mkdir_p(output_dir)
+    mkdir_p(MYSQL_BACKUP_DIR)
 
     # define the dump file
     dump_file = "#{output_dir}/#{file_name}_ee_dump.sql.gz"
 
     # build the mysqldump command
-    cmd = "mysqldump --quick --single-transaction --create-options -u#{db_admin_user}"
-    cmd += " -p'#{db_admin_password}'" unless db_admin_password.nil?
-    cmd += " --databases #{db_name} | gzip > #{dump_file}"
+    cmd = "mysqldump --quick --single-transaction --create-options -u#{@db_admin_user}"
+    cmd += " -p'#{@db_admin_password}'" unless @db_admin_password.nil?
+    cmd += " --databases #{@db_name} | gzip > #{dump_file}"
     puts "Command is [#{cmd}]"
 
     # run the mysqldump command
@@ -55,8 +54,22 @@ class Mysql < Thor
     when String then config = load_config(config)
     end
 
-    # build the msqldump load command
-    #cmd =
+    # db user / password
+    process_config(config)
 
+    # build the load command
+    cmd = "gunzip -c #{dump_file} | mysql -u#{@db_admin_user}"
+    cmd += " -p'#{@db_admin_password}'" unless @db_admin_password.nil?
+    puts "Command is [#{cmd}]"
+
+    # run the load command
+    system(cmd)
+  end
+
+  private 
+  def process_config(config)
+    @db_name = config['db']['name']
+    @db_admin_user = config['db']['admin_user']
+    @db_admin_password = config['db']['admin_password']
   end
 end

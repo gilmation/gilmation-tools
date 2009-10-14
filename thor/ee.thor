@@ -205,4 +205,11 @@ class Ee < Thor
     invoke(:ee_config)
     invoke("gilmation:store_mysql_dump_s3", [ @this_release, @backups_bucket_name, @ee_config ]) 
   end
+
+  desc("restore_mysql_dump_s3", "Restore a mysqldump file from s3 for this Database and user")
+  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
+  def restore_mysql_dump_s3
+    invoke(:ee_config)
+    invoke("gilmation:restore_mysql_dump_s3", [ @backups_bucket_name, @ee_config ]) 
+  end
 end

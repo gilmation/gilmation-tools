@@ -2,9 +2,9 @@
 # Module namespace to 
 # identify the Utils as a part
 # of the Gilmation code base
-# Different name is used to avoid
-# a clash with the Gilmation Thor 
-# class
+# A different name is used to avoid
+# a namespace clash with the Gilmation
+# Thor class
 #
 module Gilm
   #
