@@ -20,3 +20,5 @@ tar -zc ./cookbooks ./site-cookbooks | ssh $1@$2 "cd /etc/chef; sudo tar -zx"
 cd -
 
 ssh $1@$2 "sudo chef-solo -j /etc/chef/gilmation_site_node.json"
+
+ssh $1@$2 "rm -rf /etc/chef/solo.rb /etc/chef/cookbooks /etc/chef/site-cookbooks /etc/chef/gilmation_site_node.json"

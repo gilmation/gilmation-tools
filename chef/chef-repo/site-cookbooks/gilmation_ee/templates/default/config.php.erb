@@ -1,0 +1,25 @@
+<?php
+
+if ( ! defined('EXT')){
+exit('Invalid file request');
+}
+
+$conf['app_version'] = "168";
+$conf['license_number'] = "<% @node[:ee][:license_number] %>";
+$conf['debug'] = "1";
+$conf['install_lock'] = "1";
+$conf['db_hostname'] = "<% @node[:mysql][:bind_address] %>";
+$conf['db_username'] = "<% @node[:db][:user] %>";
+$conf['db_password'] = "<% @node[:db][:password] %>";
+$conf['db_name'] = "<% @node[:db][:name] %>";
+$conf['db_type'] = "<% @node[:db][:type] %>";
+$conf['db_prefix'] = "<% @node[:db][:prefix] %>";
+$conf['db_conntype'] = "0";
+$conf['system_folder'] = "<% @node[:ee][:system_name] %>";
+$conf['cp_url'] = "<% @node[:ee][:cp_url] %>";
+$conf['doc_url'] = "<% @node[:ee][:doc_url] %>";
+$conf['cookie_prefix'] = "";
+$conf['is_system_on'] = "y";
+$conf['allow_extensions'] = "n";
+$conf['multiple_sites_enabled'] = "y";
+?>

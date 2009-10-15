@@ -1,0 +1,12 @@
+db:
+  server: <% @node[:db][:server] %>
+  name: <% @node[:db][:name] %>
+  user: <% @node[:db][:user] %>
+  password: <% @node[:db][:password] %>
+  admin_user: <% @node[:db][:admin_user] %>
+  admin_password: <% @node[:db][:admin_password] %>
+  backups_bucket_name: <% @node[:db][:backups_bucket_name] %>
+deploy:
+  root: <% @node[:gilmation][:webroot] %>
+  system_name: <% @node[:ee][:system_name] %>
+  ee_dir: <% @node[:ee][:ee_dir] %>

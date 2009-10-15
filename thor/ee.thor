@@ -13,7 +13,7 @@ class Ee < Thor
   map "-c" => :list_config
 
   desc "list_config", "Output the configuration that we have loaded from file"
-  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def list_config
 
     puts "Config file values are"
@@ -29,7 +29,7 @@ class Ee < Thor
 
   desc "ee_config",
   "Get the configuration, filename or path (concatenates the environmental variable EE_HOME unless filename can be found)"
-  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def ee_config
 
     # return the config if it already exists
@@ -44,7 +44,6 @@ class Ee < Thor
     @releases_dir = :releases
     @current_release = :current
     @this_release = Time.now.strftime("%Y%m%d_%H%M")
-    @backups_bucket_name = 'gilmation_development_db_backups'
 
     # shared image dirs
     @shared_image_dirs = [ "images/avatars/uploads", "images/captchas",
@@ -55,8 +54,11 @@ class Ee < Thor
     @shared_image_dirs << "images/forum_attachments"
 
     # Get the config file
-    ee_config_file = options[:config_file] && File.exists?(options[:config_file]) ||
-    File.join(ENV['EE_HOME'], 'config', options[:config_file])
+    ee_config_file = if(options[:config_file] && File.exists?(options[:config_file]))
+                        options[:config_file] 
+                     else
+                        File.join(ENV['HOME'], '.ee', options[:config_file])
+                     end
 
     puts "Using config file [#{ee_config_file}]"
 
@@ -72,7 +74,7 @@ class Ee < Thor
   end
 
   desc "deploy_local", "Development Expression Engine install to the local web deploy root (as per the configuration)"
-  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def deploy_local
     invoke :ee_config
     invoke :check_create_directories
@@ -153,7 +155,7 @@ class Ee < Thor
   end
 
   desc("manage_deployments", "Given a number, defaults to 5, save the most recent $number of deployments and delete the rest")
-  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def manage_deployments(number = 5)
 
     case(number)
@@ -200,16 +202,16 @@ class Ee < Thor
   end
 
   desc("store_mysql_dump_s3", "Store a mysqldump file in s3 for this Database and user")
-  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def store_mysql_dump_s3
     invoke(:ee_config)
-    invoke("gilmation:store_mysql_dump_s3", [ @this_release, @backups_bucket_name, @ee_config ]) 
+    invoke("gilmation:store_mysql_dump_s3", [ @this_release, @ee_config ]) 
   end
 
   desc("restore_mysql_dump_s3", "Restore a mysqldump file from s3 for this Database and user")
-  method_option(:config_file, :default => "config.yml", :type => :string, :aliases => "-f")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def restore_mysql_dump_s3
     invoke(:ee_config)
-    invoke("gilmation:restore_mysql_dump_s3", [ @backups_bucket_name, @ee_config ]) 
+    invoke("gilmation:restore_mysql_dump_s3", [ @ee_config ]) 
   end
 end
