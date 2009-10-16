@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 # mysql creation of the db and users
+include_recipe "mysql::server"
 
 Gem.clear_paths # needed for Chef to find the gem...
 require 'mysql' # requires the mysql gem
@@ -30,11 +31,15 @@ execute "create #{node[:db][:name]} database" do
 end
 
 ruby "create #{node[:db][:user]} user" do
-  m = Mysql.new(@node[:mysql][:bind_address], "root", @node[:mysql][:server_root_password])
+  code <<-EOH
+  require 'rubygems'
+  require 'mysql'
+  m = Mysql.new("#{@node[:mysql][:bind_address]}", "root", "#{@node[:mysql][:server_root_password]}")
   m.query("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP ON #{@node[:db][:name]}.* to '#{@node[:db][:user]}'@'#{@node[:mysql][:bind_address]}' IDENTIFIED BY '#{@node[:db][:password]}'")
+  EOH
   not_if do
     test_m = Mysql.new(@node[:mysql][:bind_address], "root", @node[:mysql][:server_root_password])
-    result = test_m.query("Select * from mysql.User where User='#{@node[:db][:user]}'")
+    result = test_m.query("Select * from mysql.user where User='#{@node[:db][:user]}'")
     result && result.num_rows > 0
   end
 end

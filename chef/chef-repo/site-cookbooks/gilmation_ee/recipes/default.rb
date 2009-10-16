@@ -96,7 +96,7 @@ node[:users].each do | user |
 end
 
 # Create database and users
-include_recipe "gilmation:mysql_db_and_users"
+include_recipe "gilmation::mysql_db_and_users"
 
 # Install Gems
 [ "thor", "right_aws" ].each do | gem |
