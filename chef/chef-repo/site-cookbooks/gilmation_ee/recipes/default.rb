@@ -47,9 +47,9 @@ directories = [
 
 directories.each do |dir|
   directory dir do
-    owner node[:gilmation][:apache_user]
+    owner node[:ee][:user]
     group node[:gilmation][:apache_group]
-    mode node[:gilmation][:apache_mode]
+    mode node[:ee][:mode]
     recursive true
   end
 end
@@ -68,9 +68,9 @@ apache_site "gilmation-site"
 # Create config.php for Expression Engine only if one doesn't exist
 template "#{node[:gilmation][:webroot]}/shared/config/config.php" do
   source "config.php.erb"
-  owner node[:gilmation][:apache_user]
+  owner node[:ee][:user]
   group node[:gilmation][:apache_group]
-  mode node[:gilmation][:apache_mode]
+  mode node[:ee][:mode]
   not_if do File.exists?("#{node[:gilmation][:webroot]}/shared/config/config.php") end
 end
 

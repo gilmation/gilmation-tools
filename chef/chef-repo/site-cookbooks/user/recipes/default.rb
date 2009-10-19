@@ -22,6 +22,12 @@ node[:users].each do | user |
     action :create
   end
 
+  #directory "#{user[:home]}" do
+    #owner user[:user]
+    #group user[:group]
+    #mode 0755
+  #end
+
   user user[:user] do
     comment user[:comment]
     home user[:home]
@@ -43,7 +49,11 @@ node[:users].each do | user |
       source ssh_file
       owner user[:user]
       group user[:group]
-      mode 0600
+      if ssh_file.end_with?("pub")
+        mode 0644
+      else 
+        mode 0600
+      end
       if user[:cookbook]
         cookbook user[:cookbook]
       end
