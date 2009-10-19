@@ -21,6 +21,12 @@ class Ee < Thor
       show_string_hash(key, value)
     end
     puts "######"
+    puts "Derived config values are"
+    puts "assets_dir [#{@assets_dir}]"
+    puts "ee_dir [#{@ee_dir}]"
+    puts "this_release [#{@this_release}]"
+    
+    puts "######"
     puts "Shared image dirs are"
     @shared_image_dirs.each do | dir |
       puts "[#{dir}]"
@@ -65,7 +71,8 @@ class Ee < Thor
     @ee_config = YAML.load_file(ee_config_file)
     @deploy_root = @ee_config['deploy']['root']
     @ee_system = @ee_config['deploy']['system_name']
-    @ee_dir = File.join(ENV['EE_HOME'], @ee_config['deploy']['ee_dir'])
+    @ee_dir = @ee_config['deploy']['ee_dir'] && File.join(ENV['EE_HOME'], @ee_config['deploy']['ee_dir']) || 
+      ENV['EE_HOME']
 
     ## assets dir
     @assets_dir = "#{@deploy_root}/#{@shared_dir}/assets"
