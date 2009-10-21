@@ -37,35 +37,43 @@ module Gilm
 
     #
     # Recursive method that will check all the elements in a
-    # deployed directory are equal to those in a source
+    # destination directory are equal to those in a source
     # directory - if this is not the case then a warning
     # will be printed.
     # @param source_path [String] the source_path
-    # @param deployed_path [String] the deployed_path
-    def check_files(source_path, deployed_path)
-      return unless File.exists?(deployed_path)
+    # @param destination_path [String] the destination_path
+    # @return true if there is a problem with the file
+    def check_files(source_path, destination_path)
+      begin
+        puts("[#{destination_path} does not exist")
+        return true
+      end unless File.exists?(destination_path)
 
-      Dir.foreach(deployed_path) do | deployed_file |
+      Dir.foreach(destination_path) do | destination_file |
         # pass on this file if we have a self or parent reference
-        next if ['.', '..'].include?(deployed_file)
+        next if ['.', '..'].include?(destination_file)
 
-        source_file = File.join(source_path, deployed_file)
-        deployed_file = File.join(deployed_path, deployed_file)
+        source_file = File.join(source_path, destination_file)
+        destination_file = File.join(destination_path, destination_file)
 
-        if(File.exists?(source_file))
-          if(File.directory?(deployed_file))
-            # we need recursion if the File is a directory
-            check_files(source_file, deployed_file)
-          else
-            unless(uptodate?(source_file, deployed_file) ||
-              File.size(source_file) == File.size(deployed_file))
-              puts("[#{deployed_file}] is newer and a different size than the source control version")
-            end
-          end
+        if(File.directory?(destination_file))
+          # we need recursion if the File is a directory
+          check_files(source_file, destination_file)
         else
-          puts("[#{source_file}] does not exist, but a deployed version exists")
+          if(File.exists?(source_file))
+            unless(uptodate?(source_file, destination_file) ||
+              File.size(source_file) == File.size(destination_file))
+              puts("[#{destination_file}] is newer and a different size than [#{source_file}]")
+              @return_val = true
+            end
+          else
+            puts("[#{source_file}] does not exist, but [#{destination_file}] does")
+            @return_val = true
+          end
         end
       end
+
+      return @return_val
     end
 
   end

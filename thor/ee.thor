@@ -124,7 +124,8 @@ class Ee < Thor
     # setup the correct permissions
     chmod(0666, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/path.php")
     chmod(0644, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/.htaccess")
-    chmod(0777, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/cache/")
+    chmod(0770, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/cache/")
+    chmod_R(0777, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/templates/")
     chmod(0666, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/config_bak.php")
     #chmod(0755, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/translations")
   end
@@ -157,12 +158,21 @@ class Ee < Thor
 # General methods
 #
   
-  desc "check_ee_config", "Make sure that the config files exist and are up to date"
+  desc("get_web_templates", "update the templates from the web directory")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def get_web_templates
+    invoke(:ee_config)
+    begin
+      cp_r(Dir.glob("#{@deploy_root}/#{@current_release}/#{@ee_system}/templates/**"), "#{@ee_dir}/#{@ee_system}/templates")
+    end unless check_files("#{@deploy_root}/#{@current_release}/#{@ee_system}/templates", "#{@ee_dir}/#{@ee_system}/templates") 
+  end
+
+  desc("check_ee_config", "Make sure that the config files exist and are up to date")
   def check_ee_config
 
   end
 
-  desc "deploy_local_config", "This is a generated configuration and should not be stored in git"
+  desc("deploy_local_config", "This is a generated configuration and should not be stored in git")
   def deploy_local_config
 
   end
