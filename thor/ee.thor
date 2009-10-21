@@ -60,6 +60,7 @@ class Ee < Thor
     @shared_image_dirs << "images/forum_attachments"
 
     # Get the config file
+    puts "Using home [#{ENV['HOME']}], config_file [#{options[:config_file]}]"
     ee_config_file = if(options[:config_file] && File.exists?(options[:config_file]))
                         options[:config_file] 
                      else
@@ -80,10 +81,15 @@ class Ee < Thor
     return @ee_config
   end
 
-  desc "deploy_local", "Development Expression Engine install to the local web deploy root (as per the configuration)"
+#
+# Physical local deployment - actually copy the files into the web deployment directory
+#
+
+  desc "physical_deploy_local", "Development Expression Engine install to the local web deploy root (as per the configuration)"
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
-  def deploy_local
+  def physical_deploy_local
     invoke :ee_config
+    invoke :check_templates
     invoke :check_create_directories
     invoke :copy_files
     invoke :create_links
@@ -112,23 +118,23 @@ class Ee < Thor
   desc("copy_files", 
     "Copy the contents of the directory refered to by the ee_dir variable to the this_release directory and setup the permissions")
   def copy_files
-    cp_r(FileList.new("#{@ee_dir}/*", "#{@ee_dir}/.htaccess"), "#{@deploy_root}/#{@releases_dir}/#{@this_release}")
+    cp_r(Dir.glob("#{@ee_dir}/**"), "#{@deploy_root}/#{@releases_dir}/#{@this_release}")
+    cp_r("#{@ee_dir}/.htaccess", "#{@deploy_root}/#{@releases_dir}/#{@this_release}")
 
     # setup the correct permissions
     chmod(0666, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/path.php")
+    chmod(0644, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/.htaccess")
     chmod(0777, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/cache/")
     chmod(0666, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/config_bak.php")
     #chmod(0755, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/translations")
   end
 
-  desc "check_ee_config", "Make sure that the config files exist and are up to date"
-  def check_ee_config
-
-  end
-
-  desc "deploy_local_config", "This is a generated configuration and should not be stored in git"
-  def deploy_local_config
-
+  desc("check_templates", "Checks to make sure that when we deploy a new version we don't forget any web UI created templates")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def check_templates
+    # get the config info
+    invoke(:ee_config)
+    check_files("#{@ee_dir}/#{@ee_system}/templates", "#{@deploy_root}/#{@current_release}/#{@ee_system}/templates") 
   end
 
   desc("create_links",
@@ -147,10 +153,40 @@ class Ee < Thor
     end
   end
 
+#
+# General methods
+#
+  
+  desc "check_ee_config", "Make sure that the config files exist and are up to date"
+  def check_ee_config
+
+  end
+
+  desc "deploy_local_config", "This is a generated configuration and should not be stored in git"
+  def deploy_local_config
+
+  end
+
   desc("delete_shared_files", "Delete the files that should not appear in the source code repository")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def delete_shared_files
+    # get the config info
+    invoke(:ee_config)
+
     @shared_image_dirs.each do | dir |
       rm_r("#{@ee_dir}/#{dir}")
+    end
+  end
+
+  desc("create_shared_files", "Create the files that should not appear in the source code repository")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def create_shared_files
+    # get the config info
+    invoke(:ee_config)
+    
+    @shared_image_dirs.each do | dir |
+      mkdir_p("#{@ee_dir}/#{dir}") unless File.exists?("#{@ee_dir}/#{dir}")
+      chmod(0777, "#{@ee_dir}/#{dir}")
     end
   end
 
@@ -207,6 +243,20 @@ class Ee < Thor
       puts("Not deleting any deployments")
     end
   end
+
+  #desc("deploy_with_link", "Deploy the code by using a link to the development project dir")
+  #method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  #def deploy_with_link
+    ## get the config info
+    #invoke(:ee_config)
+
+    ## link the web dir
+    #File.exists?("#{@deploy_root}/#{@current_release}") && rm("#{@deploy_root}/#{@current_release}")
+    #ln_s("#{@ee_dir}", "#{@deploy_root}/#{@current_release}") 
+
+    ## create the shared file that are not under version control
+    #invoke(:create_shared_files)
+  #end
 
   desc("store_mysql_dump_s3", "Store a mysqldump file in s3 for this Database and user")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
