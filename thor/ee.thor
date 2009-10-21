@@ -85,9 +85,9 @@ class Ee < Thor
 # Physical local deployment - actually copy the files into the web deployment directory
 #
 
-  desc "physical_deploy_local", "Development Expression Engine install to the local web deploy root (as per the configuration)"
+  desc "deploy_local", "Development Expression Engine install to the local web deploy root (as per the configuration)"
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
-  def physical_deploy_local
+  def deploy_local
     invoke :ee_config
     invoke :check_templates
     invoke :check_create_directories
