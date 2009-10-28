@@ -1,0 +1,16 @@
+#/bin/bash
+
+ARGS_EXPECTED=2
+
+if [[ $# -ne $ARGS_EXPECTED ]]; then
+  echo "Usage: `basename $0` user host"
+  exit 1
+fi
+
+cat ~/.ssh/id_rsa.pub >> ./authorized_keys
+
+ssh $1@$2 "mkdir -pm 700 ~/.ssh"
+
+scp -p ./authorized_keys $1@$2:~/.ssh/authorized_keys
+
+rm ./authorized_keys
