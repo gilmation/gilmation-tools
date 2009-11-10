@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Install the basics for Ruby
 sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential wget

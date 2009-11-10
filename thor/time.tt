@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+	  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="Shortcut Icon" href="" type="image/x-icon" />
+    <title>Hours</title>
+  </head>
+  <body>
+    <div id="summary">
+      <table id="summary-table">
+        <!-- Table head -->
+        <thead>
+          <tr>
+            <th>Number of Days</th>
+            <th>Total Number of Hours</th>
+          </tr>
+        </thead>
+
+        <!-- table body -->
+        <tbody>
+          <tr>
+            <td><%= @total_days %></td>
+            <td><%= @total_hours %>:<%= @total_mins %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div id="detail">
+      <table id="detail-table">
+        <!-- Table head -->
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Times</th>
+            <th>Hours</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+
+        <!-- table body -->
+        <tbody>
+          <% for row in @detail_array %>
+          <tr>
+            <td><%= row[0] %></td>
+            <td><%= row[1] %></td>
+            <td><%= row[2] %></td>
+            <% if(row.size > 3) %>
+            <td><%= row[3] %></td>
+            <% else %>
+            <td></td>
+            <% end %>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="footer">
+      <ul class="metanav">
+        <li class="first"><a title="Copyright" href="http://gimation.com">Copyright Gilmation &copy; 2009</a></li>
+      </ul>
+    </div><!-- fin de #footer -->
+  </body>
+</html>
