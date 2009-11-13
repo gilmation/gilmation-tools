@@ -12,7 +12,7 @@ class Gilmation < Thor
     puts("Bucket name [#{@db_backups_bucket_name}]")
     dump_file = invoke("mysql:create_mysql_dump", [ file_name, config ])
     puts("Dump File is [#{dump_file}]")
-    invoke("s3:upload_file", [ file_name, bucket_name, dump_file ]) 
+    invoke("s3:upload_file", [ file_name, @db_backups_bucket_name, dump_file ]) 
   end
 
   desc("restore_mysql_dump_s3", "Restore a dump of a db retrieved from the given bucket in s3")
@@ -20,7 +20,7 @@ class Gilmation < Thor
   def restore_mysql_dump_s3(config)
     process_config(config)
     puts("Bucket name [#{@db_backups_bucket_name}]")
-    dump_file = invoke("s3:get_file", [ bucket_name ])
+    dump_file = invoke("s3:get_file", [ @db_backups_bucket_name ])
     invoke("mysql:load_mysql_dump", [ dump_file, config ])
   end
 

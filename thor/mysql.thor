@@ -31,7 +31,7 @@ class Mysql < Thor
     mkdir_p(MYSQL_BACKUP_DIR)
 
     # define the dump file
-    dump_file = "#{output_dir}/#{file_name}_ee_dump.sql.gz"
+    dump_file = "#{MYSQL_BACKUP_DIR}/#{file_name}_ee_dump.sql.gz"
 
     # build the mysqldump command
     cmd = "mysqldump --quick --single-transaction --create-options -u#{@db_admin_user}"
