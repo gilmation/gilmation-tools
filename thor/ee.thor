@@ -148,6 +148,15 @@ class Ee < Thor
     # the config file
     #ln_s("#{@deploy_root}/#{@shared_dir}/config/config.php", "#{@deploy_root}/#{@current_release}/#{@ee_system}/config.php")
 
+    invoke(:create_links)
+  end
+
+  desc("create_links", "Create the links that we need to use the shared assets dirs")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def create_links
+    # get the config info
+    invoke(:ee_config)
+
     # standard image upload directories
     @shared_image_dirs.each do | dir |
       ln_s("#{@assets_dir}/#{dir}", "#{@deploy_root}/#{@current_release}/#{dir}")

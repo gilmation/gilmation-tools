@@ -35,6 +35,7 @@ class Mysql < Thor
 
     # build the mysqldump command
     cmd = "mysqldump --quick --single-transaction --create-options -u#{@db_admin_user}"
+    cmd += " -h#{@db_server}"
     cmd += " -p'#{@db_admin_password}'" unless @db_admin_password.nil?
     cmd += " --databases #{@db_name} | gzip > #{dump_file}"
     puts "Command is [#{cmd}]"
@@ -59,6 +60,7 @@ class Mysql < Thor
 
     # build the load command
     cmd = "gunzip -c #{dump_file} | mysql -u#{@db_admin_user}"
+    cmd += " -h#{@db_server}"
     cmd += " -p'#{@db_admin_password}'" unless @db_admin_password.nil?
     puts "Command is [#{cmd}]"
 
@@ -69,6 +71,7 @@ class Mysql < Thor
   private 
   def process_config(config)
     @db_name = config['db']['name']
+    @db_server = config['db']['server']
     @db_admin_user = config['db']['admin_user']
     @db_admin_password = config['db']['admin_password']
   end
