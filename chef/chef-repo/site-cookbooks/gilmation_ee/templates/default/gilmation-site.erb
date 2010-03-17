@@ -1,8 +1,6 @@
-NameVirtualHost *:80
-
 <VirtualHost *:80>
   ServerName    www.<%= @node[:gilmation][:domain_name] %>.<%= @node[:gilmation][:domain] %>
-  ServerAlias   <%= @node[:gilmation][:domain_name] %>.com *.<%= @node[:gilmation][:domain_name] %>.com
+  ServerAlias   <%= @node[:gilmation][:domain_name] %>.<%= @node[:gilmation][:domain] %> *.<%= @node[:gilmation][:domain_name] %>.<%= @node[:gilmation][:domain] %>
   DocumentRoot  <%= @node[:gilmation][:webroot] %>/current
   <Directory <%= @node[:gilmation][:webroot] %>/current>
     Order allow,deny

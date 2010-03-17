@@ -4,6 +4,7 @@
 # Based on the Ubuntu apache2.conf
 
 ServerRoot "<%= @node[:apache][:dir] %>"
+DocumentRoot "<%= @node[:apache][:docs] %>"
 
 User <%= @node[:apache][:user] %>
 Group <%= @node[:apache][:user] %>
@@ -37,6 +38,30 @@ Timeout <%= @node[:apache][:timeout] %>
 KeepAlive <%= @node[:apache][:keepalive] %>
 MaxKeepAliveRequests <%= @node[:apache][:keepaliverequests] %>
 KeepAliveTimeout <%= @node[:apache][:keepalivetimeout] %>
+
+<Directory />
+    #Options FollowSymLinks
+    AllowOverride None
+    Order deny,allow
+    Deny from all
+</Directory>
+
+<Directory "<%= @node[:apache][:docs] %>">
+    Options Indexes FollowSymLinks MultiViews
+
+    #
+    # AllowOverride controls what directives may be placed in .htaccess files.
+    # It can be "All", "None", or any combination of the keywords:
+    #   Options FileInfo AuthConfig Limit
+    #
+    AllowOverride All
+
+    #
+    # Controls who can get stuff from this server.
+    #
+    Order allow,deny
+    Allow from all
+</Directory>
 
 ##
 ## Server-Pool Size Regulation (MPM specific)

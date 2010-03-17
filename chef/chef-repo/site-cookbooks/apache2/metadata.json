@@ -231,6 +231,17 @@
 
       ]
     },
+    "apache\/docs": {
+      "default": "\/var\/www\/sites",
+      "type": "string",
+      "multiple_values": false,
+      "description": "Location for Apache document root",
+      "display_name": "Apache Document Root",
+      "required": false,
+      "recipes": [
+
+      ]
+    },
     "apache\/worker\/maxsparethreads": {
       "default": "192",
       "type": "string",
