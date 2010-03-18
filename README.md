@@ -28,8 +28,6 @@ The scripts directory contains OS specific scripts that can be used to bootstrap
 ##### iptables
 1. Setup the iptables (firewall) for a given ubuntu machine
 
-- - -
-
 ## Chef {#chef}
 
 The chef directory contains a script [launch](#chef-launch) and the [chef-repo](#chef-repo) directory.  
@@ -48,8 +46,6 @@ These are opscode / 37 signals cookbooks that have not been modified and can be 
 This directory contains the gilmation specific cookbooks that we run in order to configure the standard gilmation.com server.
 
 The recipe that does most of the hard yards here is - gilmation_ee/recipes/default.rb.  This recipe calls the other site specific recipes and as well as installing the software necessary for gilmation.com it also prepares directories so that we can deploy the Expression Engine code easily with Capistrano and administer the Database with [Thor](#thor).  
-
-- - -
 
 ## Thor {#thor}
 
@@ -75,8 +71,6 @@ Amazon S3 tasks - upload and retrieve.
 
 ##### utils.rb
 Does exactly what is says on the tin…  Utility / Helper methods. 
-
-- - -
 
 ## Test procedure with a clean install ubuntu
 
