@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Upload the thor files that we are going to use to administer the system
+#
+
+ARGS_EXPECTED=2
+
+if [[ $# -ne $ARGS_EXPECTED ]]; then
+  echo "Usage: `basename $0` user host"
+  exit 1
+fi
+
+ssh $1@$2 "sudo mkdir -pm 751 /home/deploy/thor"
+tar -zc ./s3.thor ./utils.rb ./ee.thor ./gilmation.thor ./mysql.thor | ssh $1@$2 "cd /home/deploy/thor; sudo tar -zx"
+ssh $1@$2 "sudo chown -R deploy:deploy /home/deploy/thor"
+
+# Create a cron job to back up the DB ? 
+

@@ -4,6 +4,9 @@
 # Use Gems to install ohai and chef (and their dependencies)
 #
 
+# Make sure the package lists are up to date
+sudo apt-get update
+
 # Install the basics for Ruby
 sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential wget
 
