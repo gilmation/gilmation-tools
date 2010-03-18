@@ -2,7 +2,7 @@
 
 # Setup the ssh login so that we can do stuff
 # In theory if we are in the box already ssh is
-# open but this documents the steps necesary for
+# open but this script documents the steps necesary for
 # a local (virtual) machine.
 
 #

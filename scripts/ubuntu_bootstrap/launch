@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# Connect to the given host (arg 2) as the given user (arg 1)
+# Copy over the setup script from this directory
+# Run the setup script
+#
 
 ARGS_EXPECTED=2
 

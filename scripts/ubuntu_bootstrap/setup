@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Install the minimum config necesary for a Ruby environment (Ruby and Gems)
+# Use Gems to install ohai and chef (and their dependencies)
+#
 
 # Install the basics for Ruby
 sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential wget

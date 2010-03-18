@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# Copy this users public key to the .ssh dir on the given server
+# Setting up the connection so that it won't ask for a password
+# NOTE: only for use by someone who knows what they are doing
+#
 
 ARGS_EXPECTED=2
 
