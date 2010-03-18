@@ -3,20 +3,20 @@
 This directory contains the tools used to manage Gilmation servers and the software that runs on them
 
 #### At the present time there are three directories:
-* [scripts](#scripts) - Bootstrap scripts and other utilities written in bash.
-* [chef](#chef) - System configuration scripts (mainly chef standalone). [Chef Repo](http://github.com/opscode/chef)
-* [thor](#thor) - Deployment, backups and storage of the backups in Amazon s3. [Thor Repo](http://github.com/wycats/thor)
+* Scripts - Bootstrap scripts and other utilities written in bash.
+* Chef - System configuration scripts (mainly chef standalone). [Chef Repo](http://github.com/opscode/chef)
+* Thor - Deployment, backups and storage of the backups in Amazon s3. [Thor Repo](http://github.com/wycats/thor)
 
-## Scripts {#scripts}
+## Scripts
 
 The scripts directory contains OS specific scripts that can be used to bootstrap a new instance into a state suitable to run something a bit more "cultured" :-), in our case [Chef](http://github.com/opscode/chef).
 
 ##### launch
 1. Connect to the given host (arg 2) as the given user (arg 1)
-2. Copy over the [setup](#setup) script from this directory
-3. Run the [setup](#setup) script
+2. Copy over the setup script from this directory
+3. Run the setup script
 
-##### setup {#setup}
+##### setup 
 1. Install the minimum config necesary for a Ruby environment (Ruby and Gems)
 2. Use Gems to install ohai and chef (and their dependencies)
 
@@ -28,16 +28,16 @@ The scripts directory contains OS specific scripts that can be used to bootstrap
 ##### iptables
 1. Setup the iptables (firewall) for a given ubuntu machine
 
-## Chef {#chef}
+## Chef
 
-The chef directory contains a script [launch](#chef-launch) and the [chef-repo](#chef-repo) directory.  
+The chef directory contains a script launch and the chef-repo directory.  
 
-##### launch {#chef-launch}
+##### launch
 1. Installs the chef cookbooks 
 2. Installs the $HOME/.ee/gilmation_site_node.json file (whcih contains the configuration necessary for this node)
 3. Runs the cookbooks using chef-solo and the gilmation_site_node.json configuration file
 
-### The chef-repo {#chef-repo} directory contains:
+### The chef-repo directory contains:
 
 ##### cookbooks
 These are opscode / 37 signals cookbooks that have not been modified and can be overridden by the cookbooks contained in the following directory
@@ -45,9 +45,9 @@ These are opscode / 37 signals cookbooks that have not been modified and can be 
 ##### site-cookbooks
 This directory contains the gilmation specific cookbooks that we run in order to configure the standard gilmation.com server.
 
-The recipe that does most of the hard yards here is - gilmation_ee/recipes/default.rb.  This recipe calls the other site specific recipes and as well as installing the software necessary for gilmation.com it also prepares directories so that we can deploy the Expression Engine code easily with Capistrano and administer the Database with [Thor](#thor).  
+The recipe that does most of the hard yards here is - gilmation_ee/recipes/default.rb.  This recipe calls the other site specific recipes and as well as installing the software necessary for gilmation.com it also prepares directories so that we can deploy the Expression Engine code easily with Capistrano and administer the Database with Thor.  
 
-## Thor {#thor}
+## Thor
 
 Thor is a gem that allows you to write scripts in ruby (like rake) but then install them and have them available to you wherever you are on a given box.  
 
