@@ -19,7 +19,7 @@ class Gilmation < Thor
   method_option(:keep, :type => :boolean, :default => true)
   def restore_mysql_dump_s3(config)
     process_config(config)
-    puts("Bucket name [#{@db_backups_bucket_name}]")
+    puts("Bucket name in the config is [#{@db_backups_bucket_name}]")
     dump_file = invoke("s3:get_file", [ @db_backups_bucket_name ])
     invoke("mysql:load_mysql_dump", [ dump_file, config ])
   end

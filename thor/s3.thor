@@ -38,16 +38,28 @@ class S3 < Thor
   # ask the user which key they would like to use.  The configuration
   # of S3 is contained in the users home directory (see the private connect 
   # method for details)
+  # If there are no keys then exit.
   # @param bucket_name [String] the bucket where the information is stored
   # @param key [String] the release associated with this request
   desc("get_file", "Get the file with the (key) and bucket from this users S3 repo")
   def get_file(bucket_name, key=nil)
+
+    # allow the user to choose a different bucket from the one that's in the config
+    user_bucket_name = ask("Enter a bucket_name or hit enter [#{bucket_name}]:") 
+    unless(user_bucket_name.nil? || user_bucket_name.empty?)
+      bucket_name = user_bucket_name
+    end
 
     # create the bucket - if it doesn't already exist
     remote_bucket = RightAws::S3::Bucket.create(connect, "#{bucket_name}", true)
 
     # blank line
     puts
+
+    if(remote_bucket.keys.empty?)
+      puts("There are no keys in the bucket [#{bucket_name}], exiting…")
+      exit(true)
+    end
 
     keys_table = []
     remote_bucket.keys.each_with_index do | key, index |
