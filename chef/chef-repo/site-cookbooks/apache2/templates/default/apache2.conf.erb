@@ -3,8 +3,8 @@
 #
 # Based on the Ubuntu apache2.conf
 
-ServerRoot "<%= @node[:apache][:dir] %>"
-DocumentRoot "<%= @node[:apache][:docs] %>"
+ServerRoot <%= @node[:apache][:dir] %>
+DocumentRoot <%= @node[:apache][:docs] %>
 
 User <%= @node[:apache][:user] %>
 Group <%= @node[:apache][:user] %>
@@ -46,7 +46,7 @@ KeepAliveTimeout <%= @node[:apache][:keepalivetimeout] %>
     Deny from all
 </Directory>
 
-<Directory "<%= @node[:apache][:docs] %>">
+<Directory <%= @node[:apache][:docs] %>>
     Options Indexes FollowSymLinks MultiViews
 
     #

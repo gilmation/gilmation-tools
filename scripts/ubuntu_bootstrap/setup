@@ -8,7 +8,7 @@
 sudo apt-get update
 
 # Install the basics for Ruby
-sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential wget
+sudo apt-get install ruby1.8 ruby1.8-dev libopenssl-ruby1.8 rdoc1.8 ri1.8 irb1.8 build-essential wget
 
 # Install RubyGems
 cd /tmp

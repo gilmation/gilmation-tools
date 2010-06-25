@@ -49,7 +49,7 @@ node[:users].each do | user |
       source ssh_file
       owner user[:user]
       group user[:group]
-      if ssh_file.end_with?("pub")
+      if ssh_file.include?("pub")
         mode 0644
       else 
         mode 0600

@@ -54,6 +54,11 @@ attribute "apache/dir",
   :description => "Location for Apache configuration",
   :default => "/etc/apache2"
 
+attribute "apache/docs",
+  :display_name => "Apache Document Root",
+  :description => "Location for Apache configuration",
+  :default => "/var/www/sites"
+
 attribute "apache/log_dir",
   :display_name => "Apache Log Directory",
   :description => "Location for Apache logs",

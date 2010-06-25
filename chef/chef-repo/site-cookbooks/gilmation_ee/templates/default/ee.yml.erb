@@ -10,3 +10,5 @@ deploy:
   root: <%= @node[:gilmation][:webroot] %>
   system_name: <%= @node[:ee][:system_name] %>
   ee_dir: 
+image:
+  backups_bucket_name: <%= @node[:image][:backups_bucket_name] %>
