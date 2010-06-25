@@ -19,12 +19,7 @@ class Mysql < Thor
   desc("create_mysql_dump", "Generate a mysql dump file and store it in file_name for the database config given")
   def create_mysql_dump(file_name, config)
 
-    # load the config if necessary
-    case config
-    when String then config = load_config(config)
-    end
-
-    # db user / password
+    # db information
     process_config(config)
 
     # create the output directory
@@ -50,12 +45,7 @@ class Mysql < Thor
   desc("load_mysql_dump", "Given a mysql dump_file load it into the database described by the config parameter") 
   def load_mysql_dump(dump_file, config) 
 
-    # load the config
-    case config
-    when String then config = load_config(config)
-    end
-
-    # db user / password
+    # db information
     process_config(config)
 
     # build the load command
@@ -68,8 +58,32 @@ class Mysql < Thor
     system(cmd)
   end
 
+  desc("update_mh_file_format", "Update the information for the mh_file fields with a format of none") 
+  def update_mh_file_format(config) 
+
+    # db information
+    process_config(config)
+
+    # update the image file image fields in the database
+    # build the load command
+    cmd = "mysql -u#{@db_admin_user}"
+    cmd += " -h#{@db_server}"
+    cmd += " -p'#{@db_admin_password}'" unless @db_admin_password.nil?
+    cmd += " -D #{@db_name}"
+    cmd += " -e \"UPDATE exp_weblog_data ewd SET ewd.field_ft_26='none' where ewd.field_id_26 != '' AND ewd.field_id_26 IS NOT NULL;\""
+    puts "Command is [#{cmd}]"
+
+    # run the update command
+    system(cmd)
+  end
+
   private 
   def process_config(config)
+    # load the config
+    case config
+    when String then config = load_config(config)
+    end
+
     @db_name = config['db']['name']
     @db_server = config['db']['server']
     @db_admin_user = config['db']['admin_user']

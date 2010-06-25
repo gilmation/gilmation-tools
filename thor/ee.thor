@@ -138,9 +138,9 @@ class Ee < Thor
     check_files("#{@ee_dir}/#{@ee_system}/templates", "#{@deploy_root}/#{@current_release}/#{@ee_system}/templates") 
   end
 
-  desc("create_links",
+  desc("create_deployment_links",
   "Create the links needed to set up the current deployment and make the shared files available to it")
-  def create_links
+  def create_deployment_links
     # link to the deployed code
     File.exists?("#{@deploy_root}/#{@current_release}") && rm("#{@deploy_root}/#{@current_release}")
     ln_s("#{@deploy_root}/#{@releases_dir}/#{@this_release}", "#{@deploy_root}/#{@current_release}")
@@ -289,5 +289,27 @@ class Ee < Thor
   def restore_mysql_dump_s3
     invoke(:ee_config)
     invoke("gilmation:restore_mysql_dump_s3", [ @ee_config ]) 
+  end
+
+  desc("store_uploaded_images_s3", "Store the uploaded images in s3")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def store_uploaded_images_s3
+    invoke(:ee_config)
+    invoke("gilmation:store_uploaded_images_s3", [ @this_release, @ee_config, @assets_dir ]) 
+  end
+
+  desc("restore_uploaded_images_s3", "Restore the uploaded images from s3")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def restore_uploaded_images_s3
+    invoke(:ee_config)
+    invoke("gilmation:restore_uploaded_images_s3", [ @ee_config, @assets_dir ]) 
+    #invoke(:create_links)
+  end
+
+  desc("update_mh_files", "Update the information for the mh_file fields with a format of none")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def update_mh_files
+    invoke(:ee_config)
+    invoke("mysql:update_mh_file_format", [ @ee_config ]) 
   end
 end
