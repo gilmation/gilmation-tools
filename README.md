@@ -60,6 +60,26 @@ Of interest to us at the moment are the 5 files that we need to install onto the
 ##### ee.thor
 A list of tasks for deployment, backups and restore of Expression Engine and it's Database.
 
+##### Using the EE Thor tasks to setup a new EE project.
+
+1. Download the EE2 codebase and install it in your development area
+2. Define a config file for your project at ~/.ee/$PROJECT_NAME.yml
+3. Run 
+
+    thor ee:deploy_local -f $PROJECT_NAME.yml
+
+4. Create a virtual host entry (Apache)
+5. Use ghost or /etc/hosts to direct the hostname to your machine
+6. Set up the file permissions in the EE2 development directory as per the EE install page
+7. Create the DB schema and user (The chef recipe for Mysql contains the SQL necessary)
+
+    /usr/bin/mysqladmin -u root -p$PASSWORD create $DB_NAME
+    GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP ON $SCHEMA_NAME.* to '$USERNAME' IDENTIFIED BY '$PASSWORD'
+
+8. Create a .gitignore file with 
+
+    thor ee:create_gitignore -f $PROJECT_NAME.yml
+
 ##### gilmation.thor
 A couple of generic methods for use by other gilmation projects.
 

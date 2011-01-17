@@ -56,9 +56,6 @@ class Ee < Thor
       "images/member_photos", "images/pm_attachments",
     "images/signature_attachments", "images/uploads" ]
 
-    # add the forum_attachments directory to the shared_image_dirs list (comment this if you are not using the forum module)
-    @shared_image_dirs << "images/forum_attachments"
-
     # Get the config file
     puts "Using home [#{ENV['HOME']}], config_file [#{options[:config_file]}]"
     ee_config_file = if(options[:config_file] && File.exists?(options[:config_file]))
@@ -72,8 +69,14 @@ class Ee < Thor
     @ee_config = YAML.load_file(ee_config_file)
     @deploy_root = @ee_config['deploy']['root']
     @ee_system = @ee_config['deploy']['system_name']
-    @ee_dir = @ee_config['deploy']['ee_dir'] && File.join(ENV['EE_HOME'], @ee_config['deploy']['ee_dir']) || 
-      ENV['EE_HOME']
+    @ee_dir = @ee_config['deploy']['ee_dir']
+    @cache_dir = @ee_config['deploy']['cache_dir']
+    @config_file_wildcard = @ee_config['deploy']['config_file_wildcard']
+
+    # add the forum_attachments directory to the shared_image_dirs list (comment this if you are not using the forum module)
+    if(@ee_config['deploy']['extra_image_dirs']) 
+      @shared_image_dirs << @ee_config['deploy']['extra_image_dirs']
+    end
 
     ## assets dir
     @assets_dir = "#{@deploy_root}/#{@shared_dir}/assets"
@@ -82,22 +85,34 @@ class Ee < Thor
   end
 
 #
-# Physical local deployment - actually copy the files into the web deployment directory
+# No physical local deployment - don't copy the files into the web deployment directory
+# Create a link to them instead
 #
 
-  desc "deploy_local", "Development Expression Engine install to the local web deploy root (as per the configuration)"
+  desc "deploy_local", "Link the development Expression Engine install to the local web deploy root (as per the configuration)"
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def deploy_local
-    invoke :ee_config
-    invoke :check_templates
-    invoke :check_create_directories
-    invoke :copy_files
-    invoke :create_links
-    invoke :check_ee_config
+    ee_config
+    check_create_shared_directories
+    create_deploy_link
+    create_shared_links
   end
 
-  desc "check_create_directories", "If they don't exist create them"
-  def check_create_directories
+  desc("create_deploy_link", "Deploy the code by using a link to the development project dir")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def create_deploy_link
+    #get the config info
+    ee_config
+
+    # link the web dir
+    File.exists?("#{@deploy_root}/#{@current_release}") && rm("#{@deploy_root}/#{@current_release}")
+    ln_s("#{@ee_dir}", "#{@deploy_root}/#{@current_release}") 
+  end
+
+  desc "check_create_shared_directories", "If the shared directories don't exist then create them"
+  def check_create_shared_directories
+    #get the config info
+    ee_config
 
     # if shared sub-directories do not exist create them and copy in the default index.html file
     @shared_image_dirs.each do | dir |
@@ -107,102 +122,55 @@ class Ee < Thor
       # add an index.html file for anyone that accesses this directory directly but don't set the permissions to wide open
       cp("#{@ee_dir}/images/index.html", "#{@assets_dir}/#{dir}") unless File.exists?("#{@assets_dir}/#{dir}/index.html")
     end
-
-    # if shared config directory does not exist then create it
-    mkdir_p("#{@deploy_root}/#{@shared_dir}/config") unless File.exists?("#{@deploy_root}/#{@shared_dir}/config")
-
-    # create this_release directory, creating the releases directory if it does not already exist
-    mkdir_p("#{@deploy_root}/#{@releases_dir}/#{@this_release}")
   end
 
-  desc("copy_files", 
-    "Copy the contents of the directory refered to by the ee_dir variable to the this_release directory and setup the permissions")
-  def copy_files
-    cp_r(Dir.glob("#{@ee_dir}/**"), "#{@deploy_root}/#{@releases_dir}/#{@this_release}")
-    cp_r("#{@ee_dir}/.htaccess", "#{@deploy_root}/#{@releases_dir}/#{@this_release}")
-
-    # setup the correct permissions
-    chmod(0666, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/path.php")
-    chmod(0644, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/.htaccess")
-    chmod(0770, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/cache/")
-    chmod_R(0777, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/templates/")
-    chmod(0666, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/config_bak.php")
-    #chmod(0755, "#{@deploy_root}/#{@releases_dir}/#{@this_release}/#{@ee_system}/translations")
-  end
-
-  desc("check_templates", "Checks to make sure that when we deploy a new version we don't forget any web UI created templates")
+  desc("create_shared_links", "Create the links that we need to use the shared assets dirs")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
-  def check_templates
+  def create_shared_links
     # get the config info
-    invoke(:ee_config)
-    check_files("#{@ee_dir}/#{@ee_system}/templates", "#{@deploy_root}/#{@current_release}/#{@ee_system}/templates") 
-  end
-
-  desc("create_deployment_links",
-  "Create the links needed to set up the current deployment and make the shared files available to it")
-  def create_deployment_links
-    # link to the deployed code
-    File.exists?("#{@deploy_root}/#{@current_release}") && rm("#{@deploy_root}/#{@current_release}")
-    ln_s("#{@deploy_root}/#{@releases_dir}/#{@this_release}", "#{@deploy_root}/#{@current_release}")
-
-    # the config file
-    #ln_s("#{@deploy_root}/#{@shared_dir}/config/config.php", "#{@deploy_root}/#{@current_release}/#{@ee_system}/config.php")
-
-    invoke(:create_links)
-  end
-
-  desc("create_links", "Create the links that we need to use the shared assets dirs")
-  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
-  def create_links
-    # get the config info
-    invoke(:ee_config)
+    ee_config
 
     # standard image upload directories
     @shared_image_dirs.each do | dir |
-      ln_s("#{@assets_dir}/#{dir}", "#{@deploy_root}/#{@current_release}/#{dir}")
+      ln_s("#{@assets_dir}/#{dir}", "#{@ee_dir}/#{dir}") unless File.exists?("#{@ee_dir}/#{dir}")
     end
   end
 
 #
 # General methods
 #
-  
-  desc("get_web_templates", "update the templates from the web directory")
+
+  desc("delete_shared_dirs", "Delete the dirs that should not appear in the source code repository")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
-  def get_web_templates
-    invoke(:ee_config)
-    begin
-      cp_r(Dir.glob("#{@deploy_root}/#{@current_release}/#{@ee_system}/templates/**"), "#{@ee_dir}/#{@ee_system}/templates")
-    end unless check_files("#{@deploy_root}/#{@current_release}/#{@ee_system}/templates", "#{@ee_dir}/#{@ee_system}/templates") 
-  end
-
-  desc("check_ee_config", "Make sure that the config files exist and are up to date")
-  def check_ee_config
-
-  end
-
-  desc("deploy_local_config", "This is a generated configuration and should not be stored in git")
-  def deploy_local_config
-
-  end
-
-  desc("delete_shared_files", "Delete the files that should not appear in the source code repository")
-  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
-  def delete_shared_files
+  def delete_shared_dirs
     # get the config info
-    invoke(:ee_config)
+    ee_config
 
     @shared_image_dirs.each do | dir |
-      rm_r("#{@ee_dir}/#{dir}")
+      if(File.exists?("#{@ee_dir}/#{dir}") && File.directory?("#{@ee_dir}/#{dir}"))
+         rm_r("#{@ee_dir}/#{dir}")
+      end
     end
   end
 
-  desc("create_shared_files", "Create the files that should not appear in the source code repository")
+  desc("create_gitignore", "Does exactly what it says on the tin")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
-  def create_shared_files
+  def create_gitignore
+    # get the config info
+    ee_config
+    File.open("#{@ee_dir}/.gitignore", 'a+') do |f|
+      @shared_image_dirs.each { |dir| f.puts("#{dir}") }
+      f.puts("#{@config_file_wildcard}")
+      f.puts("#{@cache_dir}/*cache")
+    end
+  end
+
+  desc("create_shared_dirs", "Create the dirs that should not appear in the source code repository")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def create_shared_dirs
     # get the config info
     invoke(:ee_config)
-    
+
     @shared_image_dirs.each do | dir |
       mkdir_p("#{@ee_dir}/#{dir}") unless File.exists?("#{@ee_dir}/#{dir}")
       chmod(0777, "#{@ee_dir}/#{dir}")
@@ -211,77 +179,17 @@ class Ee < Thor
 
   desc("clear_cache", "Clear the caches if they exist")
   def clear_cache
-    File.exists?("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/db_cache") && rm_r("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/db_cache/*")
-    File.exists?("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/page_cache") && rm_r("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/page_cache/*")
-    File.exists?("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/magpie_cache") && rm_r("#{@deploy_root}/#{@current_release}/#{@ee_system}/cache/magpie_cache/*")
+    # get the config info
+    invoke(:ee_config)
+
+    rm_r("#{ee_dir}/#{@ee_system}/#{cache_dir}/*cache")
   end
-
-  desc("manage_deployments", "Given a number, defaults to 5, save the most recent $number of deployments and delete the rest")
-  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
-  def manage_deployments(number = 5)
-
-    case(number)
-    when String then number = number.to_i
-    end
-
-    if(number <= 0)
-      throw('Cannot process a zero or negative number of deployments')
-    end
-
-    #get the config info
-    invoke :ee_config
-
-    #get the list of ordered deployment dirs
-    deployments = Dir.glob("#{@deploy_root}/#{@releases_dir}/*").sort{|a,b| File.mtime(b) <=> File.mtime(a)}
-
-    if(!deployments)
-      puts("There are no deployments in [#{@deploy_root}/#{@releases_dir}/*]")
-      return 
-    end
-    
-    if(deployments.length <= number)
-      puts("No deployments to delete")
-      return
-    end
-
-    # get rid of the number of deployments that we don't want to delete
-    number = number-1 unless number == 1
-    deployments.slice!(0, number)
-    puts("There are [#{deployments.length}] deployments to be deleted")
-
-    #make sure that we don't delete the one current is pointing to
-    if(deployments.delete(File.readlink("#{@deploy_root}/#{@current_release}")))
-      puts("Oops, the current link is pointing to a file that's in the list of deployments to delete")
-      puts("Removed this deployment from the liquidation list !")
-    end
-
-    if(deployments.length != 0)
-      puts("Deleting [#{deployments.length}] deployments")
-      FileUtils.rm_rf(deployments, :secure => true)
-    else 
-      puts("Not deleting any deployments")
-    end
-  end
-
-  #desc("deploy_with_link", "Deploy the code by using a link to the development project dir")
-  #method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
-  #def deploy_with_link
-    ## get the config info
-    #invoke(:ee_config)
-
-    ## link the web dir
-    #File.exists?("#{@deploy_root}/#{@current_release}") && rm("#{@deploy_root}/#{@current_release}")
-    #ln_s("#{@ee_dir}", "#{@deploy_root}/#{@current_release}") 
-
-    ## create the shared file that are not under version control
-    #invoke(:create_shared_files)
-  #end
 
   desc("store_mysql_dump_s3", "Store a mysqldump file in s3 for this Database and user")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def store_mysql_dump_s3
     invoke(:ee_config)
-    invoke("gilmation:store_mysql_dump_s3", [ @this_release, @ee_config ]) 
+    invoke("gilmation:store_mysql_dump_s3", [ @this_release, @ee_config ])
   end
 
   desc("restore_mysql_dump_s3", "Restore a mysqldump file from s3 for this Database and user")
