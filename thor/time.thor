@@ -1,7 +1,7 @@
 #
 # Project specific time tracking stuff
 #
-require 'fileutils';
+require 'fileutils'
 
 class Tt < Thor
   include Thor::Actions
