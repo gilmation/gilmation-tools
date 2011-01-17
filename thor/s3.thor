@@ -97,6 +97,16 @@ class S3 < Thor
     # have a look at the keys that are already present
     remote_bucket.keys.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key}]" }
   end
+  
+  # List the available buckets
+  # @param bucket_name [String] the bucket where the information is to be stored
+  desc("list_available_buckets", "List the available buckets in the current users S3 repo")
+  def list_available_buckets
+
+    # get the available buckets
+    # then list them
+    connect.buckets.each { |bucket| puts "Bucket [#{bucket.name}]" }
+  end
 
   # Manage the contents of the given bucket
   # Save the $number of key/values in this bucket, ordered by date, delete the rest
