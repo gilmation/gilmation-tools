@@ -169,7 +169,7 @@ class Ee < Thor
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def create_shared_dirs
     # get the config info
-    invoke(:ee_config)
+    ee_config
 
     @shared_image_dirs.each do | dir |
       mkdir_p("#{@ee_dir}/#{dir}") unless File.exists?("#{@ee_dir}/#{dir}")
@@ -180,7 +180,7 @@ class Ee < Thor
   desc("clear_cache", "Clear the caches if they exist")
   def clear_cache
     # get the config info
-    invoke(:ee_config)
+    ee_config
 
     rm_r("#{ee_dir}/#{@ee_system}/#{cache_dir}/*cache")
   end
@@ -188,28 +188,28 @@ class Ee < Thor
   desc("store_mysql_dump_s3", "Store a mysqldump file in s3 for this Database and user")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def store_mysql_dump_s3
-    invoke(:ee_config)
+    ee_config
     invoke("gilmation:store_mysql_dump_s3", [ @this_release, @ee_config ])
   end
 
   desc("restore_mysql_dump_s3", "Restore a mysqldump file from s3 for this Database and user")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def restore_mysql_dump_s3
-    invoke(:ee_config)
+    ee_config
     invoke("gilmation:restore_mysql_dump_s3", [ @ee_config ]) 
   end
 
   desc("store_uploaded_images_s3", "Store the uploaded images in s3")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def store_uploaded_images_s3
-    invoke(:ee_config)
+    ee_config
     invoke("gilmation:store_uploaded_images_s3", [ @this_release, @ee_config, @assets_dir ]) 
   end
 
   desc("restore_uploaded_images_s3", "Restore the uploaded images from s3")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def restore_uploaded_images_s3
-    invoke(:ee_config)
+    ee_config
     invoke("gilmation:restore_uploaded_images_s3", [ @ee_config, @assets_dir ]) 
     #invoke(:create_links)
   end
@@ -217,7 +217,7 @@ class Ee < Thor
   desc("update_mh_files", "Update the information for the mh_file fields with a format of none")
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def update_mh_files
-    invoke(:ee_config)
+    ee_config
     invoke("mysql:update_mh_file_format", [ @ee_config ]) 
   end
 end

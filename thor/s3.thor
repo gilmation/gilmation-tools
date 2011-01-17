@@ -45,10 +45,7 @@ class S3 < Thor
   def get_file(bucket_name, key=nil)
 
     # allow the user to choose a different bucket from the one that's in the config
-    user_bucket_name = ask("Enter a bucket_name or hit enter [#{bucket_name}]:") 
-    unless(user_bucket_name.nil? || user_bucket_name.empty?)
-      bucket_name = user_bucket_name
-    end
+    bucket_name = select_from_available_buckets(bucket_name) 
 
     # create the bucket - if it doesn't already exist
     remote_bucket = RightAws::S3::Bucket.create(connect, "#{bucket_name}", true)
@@ -99,13 +96,36 @@ class S3 < Thor
   end
   
   # List the available buckets
-  # @param bucket_name [String] the bucket where the information is to be stored
   desc("list_available_buckets", "List the available buckets in the current users S3 repo")
   def list_available_buckets
 
     # get the available buckets
     # then list them
     connect.buckets.each { |bucket| puts "Bucket [#{bucket.name}]" }
+  end
+
+  # Select a bucket from those available to this user
+  desc("select_from_available_buckets", "Choose a bucket from the list of available buckets")
+  def select_from_available_buckets(default_bucket_name)
+
+      keys_table = []
+      connect.buckets.each_with_index do |bucket, index| 
+        keys_table << [ "(#{index + 1})", bucket.name ]
+      end
+      print_table(keys_table)
+
+      number = ask("Select a number or hit enter [#{default_bucket_name}]", Thor::Shell::Color::BLUE)
+      if(number.nil? || number.empty?) 
+        return default_bucket_name
+      end
+      throw "Invalid number #{number} chosen, cannot continue" unless number =~ /^[0-9]*$/
+      throw "Number #{number} is out of range, cannot continue" if number.to_i < 1 || number.to_i > keys_table.length 
+      number = number.to_i - 1
+
+      # get the name of the bucket
+      bucket_name = keys_table[number][1]
+      puts("Got bucket name [#{bucket_name}]")
+      return bucket_name
   end
 
   # Manage the contents of the given bucket

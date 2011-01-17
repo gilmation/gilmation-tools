@@ -23,7 +23,14 @@ class Gilmation < Thor
   def restore_mysql_dump_s3(config)
     process_config(config)
     puts("Bucket name in the config is [#{@db_backups_bucket_name}]")
-    dump_file = invoke("s3:get_file", [ @db_backups_bucket_name ])
+    begin
+      dump_file = invoke("s3:get_file", [ @db_backups_bucket_name ])
+    rescue Interrupt
+      puts
+      puts("Graceful exit has been requested...request granted")
+      puts
+      exit!
+    end
     invoke("mysql:load_mysql_dump", [ dump_file, config ])
   end
 
