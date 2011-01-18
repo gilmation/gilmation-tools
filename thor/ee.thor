@@ -68,10 +68,11 @@ class Ee < Thor
 
     @ee_config = YAML.load_file(ee_config_file)
     @deploy_root = @ee_config['deploy']['root']
-    @ee_system = @ee_config['deploy']['system_name']
+    @ee_system = @ee_config['deploy']['ee_system']
     @ee_dir = @ee_config['deploy']['ee_dir']
     @cache_dir = @ee_config['deploy']['cache_dir']
-    @config_file_wildcard = @ee_config['deploy']['config_file_wildcard']
+    @config_file = @ee_config['deploy']['config_file']
+    @database_file = @ee_config['deploy']['database_file']
 
     # add the forum_attachments directory to the shared_image_dirs list (comment this if you are not using the forum module)
     if(@ee_config['deploy']['extra_image_dirs']) 
@@ -80,6 +81,7 @@ class Ee < Thor
 
     ## assets dir
     @assets_dir = "#{@deploy_root}/#{@shared_dir}/assets"
+    @shared_config_dir = "#{@deploy_root}/#{@shared_dir}/config"
 
     return @ee_config
   end
@@ -110,6 +112,7 @@ class Ee < Thor
   end
 
   desc "check_create_shared_directories", "If the shared directories don't exist then create them"
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def check_create_shared_directories
     #get the config info
     ee_config
@@ -160,8 +163,9 @@ class Ee < Thor
     ee_config
     File.open("#{@ee_dir}/.gitignore", 'a+') do |f|
       @shared_image_dirs.each { |dir| f.puts("#{dir}") }
-      f.puts("#{@config_file_wildcard}")
-      f.puts("#{@cache_dir}/*cache")
+      f.puts("#{@ee_system}/#{@config_file}")
+      @database_file && f.puts("#{@ee_system}/#{@database_file}")
+      f.puts("#{@ee_system}/#{@cache_dir}/*cache")
     end
   end
 
@@ -174,6 +178,26 @@ class Ee < Thor
     @shared_image_dirs.each do | dir |
       mkdir_p("#{@ee_dir}/#{dir}") unless File.exists?("#{@ee_dir}/#{dir}")
       chmod(0777, "#{@ee_dir}/#{dir}")
+    end
+  end
+
+  desc("move_link_config", "Get the config files, move them to the shared dirs and link them in")
+  method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
+  def move_link_config
+    # get the config info
+    ee_config
+
+    mkdir_p("#{@shared_config_dir}") unless File.exists?("#{@shared_config_dir}")
+    file_list = [ @config_file, @database_file ]
+    file_list.each do | file |
+      name = "#{@ee_dir}/#{@ee_system}/#{file}"
+      short_name = File.basename(file)
+      puts("Looking for file [#{name}]") 
+      if(File.exists?(name))
+        mv(name, @shared_config_dir)
+        ln_s("#{@shared_config_dir}/#{short_name}", name)
+        chmod(0644, "#{@shared_config_dir}/#{file}")
+      end
     end
   end
 
