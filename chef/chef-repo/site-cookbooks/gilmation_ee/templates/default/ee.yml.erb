@@ -1,3 +1,5 @@
+project:
+  name: gilmation
 db:
   server: <%= @node[:mysql][:bind_address] %>
   name: <%= @node[:db][:name] %>
@@ -8,7 +10,11 @@ db:
   backups_bucket_name: <%= @node[:db][:backups_bucket_name] %>
 deploy:
   root: <%= @node[:gilmation][:webroot] %>
-  system_name: <%= @node[:ee][:system_name] %>
-  ee_dir: 
+  ee_system: <%= @node[:ee][:system_name] %>
+  ee_dir:
+  cache_dir: <%= @node[:ee][:cache_dir] %>
+  config_file: <%= @node[:ee][:config_file] %>
+  database_file: <%= @node[:ee][:database_file] %>
+  extra_image_dirs: <%= @node[:ee][:extra_image_dirs] %>
 image:
   backups_bucket_name: <%= @node[:image][:backups_bucket_name] %>

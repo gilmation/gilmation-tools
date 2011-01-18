@@ -1,0 +1,20 @@
+project:
+  name: littlejohns
+db:
+  server: localhost
+  name: ee_littlejohns
+  user: ee_littlejohns
+  password: ej9ZXpjyjpZIVbidf1Xq
+  admin_user: root
+  admin_password: 
+  backups_bucket_name: littlejohns_development_db_backups
+deploy:
+  root: /var/www/sites/littlejohns.ltd.uk
+  ee_system: gSLGKYVnCS6hymu2piqP
+  ee_dir: /Users/hgilmour/development/gilmation-clients/littlejohns/littlejohns
+  cache_dir: expressionengine/cache
+  config_file: expressionengine/config/config.php
+  database_file: expressionengine/config/database.php
+  extra_image_dirs:
+image:
+  backups_bucket_name: littlejohns_development_image_backups
