@@ -16,7 +16,7 @@
 
 $config['app_version']          = '213';
 $config['install_lock']         = "";
-$config['license_number']       = '';
+$config['license_number']       = '<%= @node[:ee][:license_number] %>';
 $config['doc_url']              = 'http://gilmation.com/contact';
 $config['site_label']           = 'Littlejohns';
 $config['cp_theme']             = 'Corporate';
@@ -27,7 +27,7 @@ $config['autosave_interval_seconds'] = "0"; # Disabling entry autosave
 $protocol                       = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https://" : "http://";
 $base_url                       = $protocol . $_SERVER['HTTP_HOST'];
 $base_path                      = $_SERVER['DOCUMENT_ROOT'];
-$system_folder                  = "gSLGKYVnCS6hymu2piqP";
+$system_folder                  = "<%= @node[:ee][:system_name] %>";
 $images_folder                  = "images";
 $templates_folder               = "templates";
 $images_path                    = $base_path . "/" . $images_folder;

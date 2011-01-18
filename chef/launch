@@ -1,9 +1,9 @@
 #!/bin/bash
 
-ARGS_EXPECTED=2
+ARGS_EXPECTED=3
 
 if [[ $# -ne $ARGS_EXPECTED ]]; then
-  echo "Usage: `basename $0` user host"
+  echo "Usage: `basename $0` user host project"
   exit 1
 fi
 
@@ -12,15 +12,15 @@ ssh $1@$2 "sudo mkdir -pm 755 /etc/gilmation; sudo mkdir -pm 755 /etc/chef"
 # In the current version of tar for mac os x 10.5 there is no substitution option to remove 
 # directories from the output of tar archives, in 10.6 tar has a [-s pattern] option.
 cp -p ./chef-repo/config/solo.rb .
-cp -p $HOME/.ee/gilmation_site_node.json .
-tar -zc ./solo.rb ./gilmation_site_node.json | ssh $1@$2 "cd /etc/chef; sudo tar -zx"
+cp -p $HOME/.ee/$3_site_node.json .
+tar -zc ./solo.rb ./$3_site_node.json | ssh $1@$2 "cd /etc/chef; sudo tar -zx"
 rm ./solo.rb
-rm ./gilmation_site_node.json
+rm ./$3_site_node.json
 
 cd chef-repo
 tar -zc ./cookbooks ./site-cookbooks | ssh $1@$2 "cd /etc/chef; sudo tar -zx"
 cd -
 
-ssh $1@$2 "sudo chef-solo -j /etc/chef/gilmation_site_node.json"
+ssh $1@$2 "sudo chef-solo -j /etc/chef/$3_site_node.json"
 
 ssh $1@$2 "sudo rm -rf /etc/chef/*"
