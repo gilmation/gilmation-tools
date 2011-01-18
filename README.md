@@ -80,6 +80,11 @@ A list of tasks for deployment, backups and restore of Expression Engine and it'
 
     thor ee:create_gitignore -f $PROJECT_NAME.yml
 
+9. Run the EE2 install (http://$SERVER_NAME/$SYSTEM_DIR)
+10. Run the Thor task to move the configuration files that have just been updated and create symbolic links to them: 
+
+    thor ee:move_link_config -f $PROJECT_NAME.yml
+
 ##### gilmation.thor
 A couple of generic methods for use by other gilmation projects.
 
