@@ -27,7 +27,7 @@ $config['autosave_interval_seconds'] = "0"; # Disabling entry autosave
 $protocol                       = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https://" : "http://";
 $base_url                       = $protocol . $_SERVER['HTTP_HOST'];
 $base_path                      = $_SERVER['DOCUMENT_ROOT'];
-$system_folder                  = "<%= @node[:ee][:system_name] %>";
+$system_folder                  = "<%= @node[:ee][:ee_system] %>";
 $images_folder                  = "images";
 $templates_folder               = "templates";
 $images_path                    = $base_path . "/" . $images_folder;
