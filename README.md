@@ -34,8 +34,12 @@ The chef directory contains a script launch and the chef-repo directory.
 
 ##### launch
 1. Installs the chef cookbooks 
-2. Installs the $HOME/.ee/gilmation_site_node.json file (whcih contains the configuration necessary for this node)
-3. Runs the cookbooks using chef-solo and the gilmation_site_node.json configuration file
+2. Installs the $HOME/.ee/$PROJECT_NAME_site_node.json file (whcih contains the configuration necessary for this node)
+3. Runs the cookbooks using chef-solo and the $PROJECT_NAME_site_node.json configuration file
+
+NOTE: You need to run the following command first so that the launch file can connect over ssh without having to use `ssh -i`
+
+    ssh-add $KEY_FILE_LOCATION
 
 ### The chef-repo directory contains:
 
