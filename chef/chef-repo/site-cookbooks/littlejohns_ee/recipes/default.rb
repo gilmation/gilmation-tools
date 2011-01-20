@@ -49,7 +49,7 @@ directories = [
   "#{node[:littlejohns][:webroot]}/shared/assets/images/signature_attachments",
   "#{node[:littlejohns][:webroot]}/shared/assets/images/uploads",
   "#{node[:littlejohns][:webroot]}/shared/assets/images/uploads/home",
-  "#{node[:littlejohns][:webroot]}/shared/assets/images/uploads/tennants",
+  "#{node[:littlejohns][:webroot]}/shared/assets/images/uploads/tenants",
   "#{node[:littlejohns][:webroot]}/shared/assets/images/uploads/landlords",
   "#{node[:littlejohns][:webroot]}/shared/assets/images/uploads/accreditations",
   "#{node[:littlejohns][:webroot]}/shared/assets/images/uploads/properties",
