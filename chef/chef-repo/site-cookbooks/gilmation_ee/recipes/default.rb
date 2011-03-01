@@ -30,7 +30,7 @@ include_recipe "lvm"
 include_recipe "user"
 
 # Include Git so that we can get the code
-include_recipe "git"
+#include_recipe "git"
 
 # Now do the Gilmation specific stuff
 
