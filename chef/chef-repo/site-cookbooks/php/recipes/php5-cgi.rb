@@ -18,13 +18,17 @@
 # limitations under the License.
 #
 
-include_recipe "apache2"
 include_recipe "php::module_mysql"
 include_recipe "php::module_sqlite3"
 include_recipe "php::module_memcache"
 include_recipe "php::module_gd"
 include_recipe "php::module_pgsql"
 
-package "php5-cgi" do
-  action :upgrade
+case node[:platform]
+  when "centos", "redhat", "fedora", "suse"
+    #placeholder modify when available
+  when "debian", "ubuntu"
+    package "php5-cgi" do
+      action :upgrade
+    end
 end
