@@ -1,0 +1,28 @@
+{
+  "recipes": [ "test" ],
+  "mysql": {
+    "server_root_password": "pass",
+    "bind_address": "127.0.0.1",
+    "datadir": "/var/lib/mysql"
+  },
+  "ftp": {
+    "host": "ftp.com",
+    "user": "user",
+    "password": "pass",
+    "path": "path"
+  },
+  "apps": [{
+      "deploy_dir_name": "app1",
+      "version_sql": "select \"2.0.4\"",
+      "keep_config": "true",
+      "config_dir_name": "config",
+      "force_app_deploy": "false"
+    },
+    {
+      "ftp_dir_name": "app2",
+      "version_sql": "select \"2.0.4\"",
+      "keep_config": "true",
+      "config_dir_name": "config",
+      "force_app_deploy": "false"
+    }
+}
