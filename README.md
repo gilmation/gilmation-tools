@@ -17,8 +17,22 @@ The scripts directory contains OS specific scripts that can be used to bootstrap
 3. Run the setup script
 
 ##### setup 
-1. Install the minimum config necesary for a Ruby environment (Ruby and Gems)
-2. Use Gems to install ohai and chef (and their dependencies)
+1. Install the minimum config necesary for a Ruby environment (RVM)
+2. Then it's necessary to do the following on the server to configure RVM as a global install
+
+http://hivelogic.com/articles/setup-guide-rails-stack-with-passenger-rvm-bundler-apache-and-mysql-on-ubun
+http://rvm.beginrescueend.com/deployment/system-wide
+
+source /usr/local/lib/rvm
+sudo rvm install ruby-1.9.2
+sudo adduser ubuntu rvm
+rvm --default use 1.9.2
+
+echo "[[ -s \"/usr/local/lib/rvm\" ]] && source \"/usr/local/lib/rvm\"" > /etc/profile.d/rvm.sh
+chmod +x /etc/profile.d/rvm.sh
+
+3. Use the RVM Gems command to install ohai and chef (and their dependencies)
+gem install chef
 
 ##### sshSetup
 1. Copy this users public key to the .ssh dir on the given server
