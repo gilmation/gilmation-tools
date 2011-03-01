@@ -25,7 +25,7 @@ class Ee < Thor
     puts "assets_dir [#{@assets_dir}]"
     puts "ee_dir [#{@ee_dir}]"
     puts "this_release [#{@this_release}]"
-    
+
     puts "######"
     puts "Shared image dirs are"
     @shared_image_dirs.each do | dir |
@@ -54,7 +54,7 @@ class Ee < Thor
     # shared image dirs
     @shared_image_dirs = [ "images/avatars/uploads", "images/captchas",
       "images/member_photos", "images/pm_attachments",
-    "images/signature_attachments", "images/uploads" ]
+      "images/signature_attachments", "images/uploads" ]
 
     # Get the config file
     puts "Using home [#{ENV['HOME']}], config_file [#{options[:config_file]}]"
@@ -86,11 +86,10 @@ class Ee < Thor
     return @ee_config
   end
 
-#
-# No physical local deployment - don't copy the files into the web deployment directory
-# Create a link to them instead
-#
-
+  #
+  # No physical local deployment - don't copy the files into the web deployment directory
+  # Create a link to them instead
+  #
   desc "deploy_local", "Link the development Expression Engine install to the local web deploy root (as per the configuration)"
   method_option(:config_file, :default => "ee.yml", :type => :string, :aliases => "-f")
   def deploy_local

@@ -23,4 +23,4 @@ cd -
 
 ssh $1@$2 "sudo chef-solo -j /etc/chef/$3_site_node.json"
 
-ssh $1@$2 "sudo rm -rf /etc/chef/*"
+#ssh $1@$2 "sudo rm -rf /etc/chef/*"

@@ -78,7 +78,7 @@ A list of tasks for deployment, backups and restore of Expression Engine and it'
 7. Create the DB schema and user (The chef recipe for Mysql contains the SQL necessary)
 
     /usr/bin/mysqladmin -u root -p$PASSWORD create $DB_NAME
-    GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP ON $SCHEMA_NAME.* to '$USERNAME' IDENTIFIED BY '$PASSWORD'
+    GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP ON $DB_NAME.* to '$USERNAME' IDENTIFIED BY '$PASSWORD'
 
 8. Create a .gitignore file with 
 

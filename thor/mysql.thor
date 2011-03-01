@@ -2,6 +2,8 @@ require 'yaml'
 require 'fileutils'
 require File.join(File.dirname(__FILE__), 'utils.rb')
 
+MYSQL_BACKUP_DIR = "/tmp/mysql_backups"
+
 #
 # Methods for working with MySQL
 # Databases
@@ -9,8 +11,6 @@ require File.join(File.dirname(__FILE__), 'utils.rb')
 class Mysql < Thor
   include FileUtils::Verbose
   include Gilm::Utils
-
-  MYSQL_BACKUP_DIR = "/tmp/mysql_backups"
 
   # Generate a mysql dump file.  The configuration of the Database is contained
   # in the second argument.

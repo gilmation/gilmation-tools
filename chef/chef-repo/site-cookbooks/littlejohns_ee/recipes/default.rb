@@ -27,10 +27,10 @@ include_recipe "mysql::server"
 include_recipe "lvm"
 
 # Make sure that we create the users that we need
-include_recipe "user"
+#include_recipe "user"
 
 # Include Git so that we can get the code
-include_recipe "git"
+#include_recipe "git"
 
 # Now do the Littlejohns specific stuff
 
