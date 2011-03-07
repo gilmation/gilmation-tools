@@ -21,6 +21,7 @@ cd chef-repo
 tar -zc ./cookbooks ./site-cookbooks | ssh $1@$2 "cd /etc/chef; sudo tar -zx"
 cd -
 
-ssh $1@$2 "sudo chef-solo -j /etc/chef/$3_site_node.json"
+# This has to be run locally on the machine if you are using RVM ! 
+#ssh $1@$2 "sudo -E bash; chef-solo -j /etc/chef/$3_site_node.json"
 
 #ssh $1@$2 "sudo rm -rf /etc/chef/*"

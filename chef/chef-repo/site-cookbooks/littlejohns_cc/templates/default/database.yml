@@ -6,4 +6,5 @@ production:
   pool: 5
   username: <%= @node[:db][:user] %>
   password: <%= @node[:db][:password] %>
+  host: <%= @node[:db][:host] %>
   socket: <%= @node[:db][:socket] %>
