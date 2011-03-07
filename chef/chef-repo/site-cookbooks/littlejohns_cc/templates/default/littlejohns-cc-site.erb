@@ -1,0 +1,15 @@
+<VirtualHost *:80>
+  ServerName    <%= @node[:littlejohns_cc][:domain_name] %>.<%= @node[:littlejohns_cc][:domain] %>
+  DocumentRoot  <%= @node[:littlejohns_cc][:webroot] %>/current/public
+  <Directory <%= @node[:littlejohns_cc][:webroot] %>/current/public>
+    AllowOverride all
+    Options -Multiviews
+    Order allow,deny
+    Allow from all
+  </Directory>
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName  www.<%= @node[:littlejohns_cc][:domain_name] %>.<%= @node[:littlejohns_cc][:domain] %>
+  RedirectMatch permanent ^/(.*) http://<%= @node[:littlejohns_cc][:domain_name] %>.<%= @node[:littlejohns_cc][:domain] %>/$1
+</VirtualHost>
