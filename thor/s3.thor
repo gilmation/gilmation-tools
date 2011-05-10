@@ -174,6 +174,7 @@ class S3 < Thor
     # Sanity check the config
     throw "Cannot connect with an empty configuration Hash" if config.empty?
 
-    return RightAws::S3.new(config['access_key_id'], config['secret_access_key'])
+    return RightAws::S3.new(config['access_key_id'], config['secret_access_key'], 
+                                   :port => 80, :protocol => 'http', :multi_thread => false)
   end
 end
