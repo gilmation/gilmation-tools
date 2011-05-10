@@ -1,5 +1,5 @@
 require 'yaml'
-require 'right_aws'
+require 'fog'
 require 'fileutils'
 
 #
@@ -22,13 +22,16 @@ class S3 < Thor
   def upload_file(key, bucket_name, file)
 
     # create the bucket - if it doesn't already exist
-    remote_bucket = RightAws::S3::Bucket.create(connect, "#{bucket_name}", true)
+    directory = get_directory("#{bucket_name}")
 
     # add this file
-    remote_bucket.put(key, File.read(file))
-  
+    directory.files.create(
+      :key => key,
+      :body => File.read(file),
+    )
+
     # have a look at the keys that are already present
-    remote_bucket.keys.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key}]" }
+    directory.files.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key}]" }
 
     # delete the uploaded file
     rm_r(file) unless options.keep?
@@ -48,18 +51,18 @@ class S3 < Thor
     bucket_name = select_from_available_buckets(bucket_name) 
 
     # create the bucket - if it doesn't already exist
-    remote_bucket = RightAws::S3::Bucket.create(connect, "#{bucket_name}", true)
+    remote_bucket = get_directory("#{bucket_name}")
 
     # blank line
     puts
 
-    if(remote_bucket.keys.empty?)
+    if(remote_bucket.files.empty?)
       puts("There are no keys in the bucket [#{bucket_name}], exiting…")
       exit(true)
     end
 
     keys_table = []
-    remote_bucket.keys.each_with_index do | key, index |
+    remote_bucket.files.each_with_index do | key, index |
       keys_table << [ "(#{index + 1})", key ]
     end
     print_table(keys_table)
@@ -70,11 +73,11 @@ class S3 < Thor
     number = number.to_i - 1
 
     # get the file
-    puts("Getting object for key #{remote_bucket.keys[number]}")
-    file_download = remote_bucket.get(remote_bucket.keys[number])
+    puts("Getting object for key #{remote_bucket.files[number]}")
+    file_download = remote_bucket.files.get(remote_bucket.files[number])
 
     mkdir_p(S3_DOWNLOAD_DIR)
-    output_file = File.join(S3_DOWNLOAD_DIR, remote_bucket.keys[number].to_s)
+    output_file = File.join(S3_DOWNLOAD_DIR, remote_bucket.files[number].to_s)
     File.open(output_file, "w") do | file |
       file.print(file_download)
     end
@@ -89,10 +92,10 @@ class S3 < Thor
   def list_contents_bucket(bucket_name)
 
     # create the bucket - if it doesn't already exist
-    remote_bucket = RightAws::S3::Bucket.create(connect, "#{bucket_name}", true)
+    remote_bucket = get_directory("#{bucket_name}")
 
     # have a look at the keys that are already present
-    remote_bucket.keys.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key}]" }
+    remote_bucket.files.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key}]" }
   end
   
   # List the available buckets
@@ -101,7 +104,7 @@ class S3 < Thor
 
     # get the available buckets
     # then list them
-    connect.buckets.each { |bucket| puts "Bucket [#{bucket.name}]" }
+    connect.directories.each { |bucket| puts "Bucket [#{bucket.key}]" }
   end
 
   # Select a bucket from those available to this user
@@ -109,8 +112,8 @@ class S3 < Thor
   def select_from_available_buckets(default_bucket_name)
 
       keys_table = []
-      connect.buckets.each_with_index do |bucket, index| 
-        keys_table << [ "(#{index + 1})", bucket.name ]
+      connect.files.each_with_index do |bucket, index| 
+        keys_table << [ "(#{index + 1})", bucket.key ]
       end
       print_table(keys_table)
 
@@ -140,28 +143,24 @@ class S3 < Thor
       number = 1
     end
 
-    # Connect
-    s3 = connect
-
     # create the bucket - if it doesn't already exist
-    remote_bucket = RightAws::S3::Bucket.create(connect, "#{bucket_name}", true)
+    remote_bucket = get_directory("#{bucket_name}")
 
     # Get keys ordered by date
     # save only $number key/values
-    key_list = remote_bucket.keys
+    key_list = remote_bucket.files
 
     if(key_list.empty? || key_list.size < number)
       puts("The number of keys is [#{key_list.size}], nothing to delete")
     end 
 
     puts("There are [#{key_list.size}] keys, saving the last [#{number}]")
-    key_list.slice!(key_list.size-number, key_list.size)
+    key_list.slice!(key_list.size - number, key_list.size)
 
     key_list.each do | key |
       puts("Deleting key [#{key}]")
-      remote_bucket.delete(key)
+      remote_bucket.files.delete(key)
     end
-
   end
 
   private
@@ -174,7 +173,22 @@ class S3 < Thor
     # Sanity check the config
     throw "Cannot connect with an empty configuration Hash" if config.empty?
 
-    return RightAws::S3.new(config['access_key_id'], config['secret_access_key'], 
-                                   :port => 80, :protocol => 'http', :multi_thread => false)
+    return Fog::Storage.new(
+      :provider => 'AWS',
+      :aws_access_key_id => config['access_key_id'],
+      :aws_secret_access_key => config['secret_access_key']
+    )
+  end
+
+  # Get the directory refered to by the name
+  # If it doesn't exist then create it.
+  def get_directory(name)
+    directory = connect.directories.get("#{name}")
+    unless directory
+      directory = connect.directories.create(
+        :key => "#{name}"
+      )
+    end
+    directory
   end
 end
