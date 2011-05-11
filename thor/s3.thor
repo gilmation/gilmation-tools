@@ -31,7 +31,7 @@ class S3 < Thor
     )
 
     # have a look at the keys that are already present
-    directory.files.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key}]" }
+    directory.files.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key.key}]" }
 
     # delete the uploaded file
     rm_r(file) unless options.keep?
@@ -63,7 +63,7 @@ class S3 < Thor
 
     keys_table = []
     remote_bucket.files.each_with_index do | key, index |
-      keys_table << [ "(#{index + 1})", key ]
+      keys_table << [ "(#{index + 1})", key.key ]
     end
     print_table(keys_table)
 
@@ -73,16 +73,16 @@ class S3 < Thor
     number = number.to_i - 1
 
     # get the file
-    puts("Getting object for key #{remote_bucket.files[number]}")
-    file_download = remote_bucket.files.get(remote_bucket.files[number])
+    puts("Getting object for key #{remote_bucket.files[number].key}")
+    file_download = remote_bucket.files.get(remote_bucket.files[number].key).body
 
     mkdir_p(S3_DOWNLOAD_DIR)
-    output_file = File.join(S3_DOWNLOAD_DIR, remote_bucket.files[number].to_s)
+    output_file = File.join(S3_DOWNLOAD_DIR, remote_bucket.files[number].key.to_s)
     File.open(output_file, "w") do | file |
       file.print(file_download)
     end
     puts("Retrieved file stored in [#{output_file}]")
-    
+
     return output_file
   end
 
@@ -95,7 +95,7 @@ class S3 < Thor
     remote_bucket = get_directory("#{bucket_name}")
 
     # have a look at the keys that are already present
-    remote_bucket.files.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key}]" }
+    remote_bucket.files.each { |remote_key| puts "bucket [#{bucket_name}] contains key [#{remote_key.key}]" }
   end
   
   # List the available buckets
@@ -112,7 +112,7 @@ class S3 < Thor
   def select_from_available_buckets(default_bucket_name)
 
       keys_table = []
-      connect.files.each_with_index do |bucket, index| 
+      connect.directories.each_with_index do |bucket, index| 
         keys_table << [ "(#{index + 1})", bucket.key ]
       end
       print_table(keys_table)
