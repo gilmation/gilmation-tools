@@ -1,6 +1,9 @@
 require 'open-uri'
-require 'pp'
-open('http://localhost:4567') do |f|
+
+#
+# Get the Ip from a remote service
+#
+open('http://localhost:4567', :http_basic_authentication=>['admin', 'secret']) do |f|
   puts f.gets
 end
 
