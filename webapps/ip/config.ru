@@ -1,0 +1,3 @@
+require './ip'
+run Ip
+

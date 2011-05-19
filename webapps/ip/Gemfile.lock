@@ -1,0 +1,19 @@
+GIT
+  remote: git://github.com/sinatra/sinatra.git
+  revision: 82730c5f14733eab4348b876f9742e8e21de66a7
+  specs:
+    sinatra (1.3.0)
+      rack (~> 1.2)
+      tilt (~> 1.3)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    rack (1.2.2)
+    tilt (1.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  sinatra!
