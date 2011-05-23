@@ -29,7 +29,7 @@ class Ec2 < Thor
 
   desc("open_port", "Open a specific port in the default group with this machine's ip")
   def open_port(port)
-    open_ip_port_group(get_ip, port, nil)
+    open_ip_port(get_ip, port)
   end
 
   desc("open_port_group", "Open a specific port in the given group")
