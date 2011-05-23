@@ -1,3 +1,0 @@
-require './ip'
-run Ip
-
