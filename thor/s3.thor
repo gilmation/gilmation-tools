@@ -27,7 +27,9 @@ class S3 < Thor
     # add this file
     directory.files.create(
       :key => key,
-      :body => File.read(file),
+      :body => File.open(file).read
+      #:content_type => 'application/x-gzip'
+      # :content_type => 'binary/octet-stream'
     )
 
     # have a look at the keys that are already present
@@ -176,7 +178,8 @@ class S3 < Thor
     return Fog::Storage.new(
       :provider => 'AWS',
       :aws_access_key_id => config['access_key_id'],
-      :aws_secret_access_key => config['secret_access_key']
+      :aws_secret_access_key => config['secret_access_key'],
+      :region => config['region']
     )
   end
 
