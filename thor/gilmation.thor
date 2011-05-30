@@ -1,9 +1,13 @@
-# 
+require 'fileutils'
+require File.join(File.dirname(__FILE__), 'utils.rb')
+
+#
 # Utility Thor methods for use by 
 # Gilmation
-# 
+#
 class Gilmation < Thor
   include FileUtils::Verbose
+  include Gilm::Utils
 
   IMAGE_TMP_DIR = "/tmp/image_backups"
 
@@ -53,12 +57,7 @@ class Gilmation < Thor
     create_files(dump_file, config, assets_dir)
   end
 
-  private 
-  def process_config(config)
-    @db_backups_bucket_name = config['db']['backups_bucket_name']
-    @image_backups_bucket_name = config['image']['backups_bucket_name']
-  end
-
+  desc("create_bundle", "Create a gzip of a given target directory")
   def create_bundle(file_name, target_dir) 
     mkdir_p(IMAGE_TMP_DIR)
 
@@ -76,4 +75,15 @@ class Gilmation < Thor
     return bundle_file
   end
 
+  private 
+
+  def process_config(config)
+    # load the config
+    case config
+    when String then config = load_config(config)
+    end
+
+    @db_backups_bucket_name = config['db']['backups_bucket_name']
+    @image_backups_bucket_name = config['image']['backups_bucket_name']
+  end
 end
