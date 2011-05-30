@@ -33,6 +33,7 @@ module Gilm
       throw "Cannot process config file [#{config}]" unless config && File.exists?(config)
       loaded_config = YAML.load_file(config)
       throw "Cannot proceed with loaded config file [#{loaded_config}]" if loaded_config.nil? || loaded_config.empty?
+      return loaded_config
     end
 
     #
