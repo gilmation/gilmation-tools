@@ -15,4 +15,3 @@ sudo apt-get -y install curl git-core build-essential wget
 
 sudo apt-get -y install bison openssl libreadline5 libreadline-dev zlib1g zlib1g-dev libssl-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev
 
-sudo bash < <( curl -L http://bit.ly/rvm-install-system-wide )
