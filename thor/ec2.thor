@@ -61,6 +61,6 @@ class Ec2 < Thor
   private 
     def exec_ec2_command(command, ip, port, group)
       system("#{command} #{group} -p #{port} -s #{ip}/32")
-      system("ec2-describe-group")
+      # system("ec2-describe-group")
     end
 end
