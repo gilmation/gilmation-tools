@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# This script is useful for uploading the chef info
+# but it is no longer compatible with running chef solo
+# due to RVM. What you want to do is run a sudo su 
+# and then run line 31.
+#
 
 ARGS_EXPECTED=3
 
@@ -7,21 +13,21 @@ if [[ $# -ne $ARGS_EXPECTED ]]; then
   exit 1
 fi
 
-ssh $1@$2 "sudo mkdir -pm 755 /etc/gilmation; sudo mkdir -pm 755 /etc/chef"
+ssh -t $1@$2 "sudo mkdir -pm 777 /etc/chef"
 
 # In the current version of tar for mac os x 10.5 there is no substitution option to remove 
 # directories from the output of tar archives, in 10.6 tar has a [-s pattern] option.
 cp -p ./chef-repo/config/solo.rb .
 cp -p $HOME/.sites/$3_site_node.json .
-tar -zc ./solo.rb ./$3_site_node.json | ssh $1@$2 "cd /etc/chef; sudo tar -zx"
+tar -zc ./solo.rb ./$3_site_node.json | ssh $1@$2 "cd /etc/chef; tar -zx"
 rm ./solo.rb
 rm ./$3_site_node.json
 
 cd chef-repo
-tar -zc ./cookbooks ./site-cookbooks | ssh $1@$2 "cd /etc/chef; sudo tar -zx"
+tar -zc ./cookbooks ./site-cookbooks | ssh $1@$2 "cd /etc/chef; tar -zx"
 cd -
 
 # This has to be run locally on the machine if you are using RVM ! 
-#ssh $1@$2 "sudo -E bash; chef-solo -j /etc/chef/$3_site_node.json"
+#ssh $1@$2 "sudo chef-solo -j /etc/chef/$3_site_node.json"
 
 #ssh $1@$2 "sudo rm -rf /etc/chef/*"
