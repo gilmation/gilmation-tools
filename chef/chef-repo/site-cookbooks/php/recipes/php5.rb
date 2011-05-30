@@ -22,7 +22,7 @@ include_recipe "apache2"
 include_recipe "php::module_mysql"
 #include_recipe "php::module_ldap"
 #include_recipe "php::module_memcache"
-#include_recipe "php::module_gd"
+include_recipe "php::module_gd"
 #include_recipe "php::module_pgsql"
 #include_recipe "php::pear"
 
