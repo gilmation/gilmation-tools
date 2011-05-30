@@ -29,7 +29,7 @@ class Mysql < Thor
     dump_file = "#{MYSQL_BACKUP_DIR}/#{file_name}_ee_dump.sql.gz"
 
     # build the mysqldump command
-    cmd = "mysqldump --quick --single-transaction --create-options -u#{@db_admin_user}"
+    cmd = "mysqldump --quick --single-transaction --extended-insert=FALSE --skip-comments --create-options -u#{@db_admin_user}"
     cmd += " -h#{@db_server}"
     cmd += " -p'#{@db_admin_password}'" unless @db_admin_password.nil?
     cmd += " --databases #{@db_name} | gzip > #{dump_file}"
@@ -79,6 +79,7 @@ class Mysql < Thor
 
   private 
   def process_config(config)
+
     # load the config
     case config
     when String then config = load_config(config)
