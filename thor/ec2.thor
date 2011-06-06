@@ -55,7 +55,7 @@ class Ec2 < Thor
 
   desc("close_port_group", "Close a specific port in the given group")
   def close_port_group(port, group)
-    close_ip_port(get_ip, port, group)
+    close_ip_port_group(get_ip, port, group)
   end
 
   private 
