@@ -1,6 +1,6 @@
 # Gilmation Tools
 
-This directory contains tools that were created to manage Gilmation servers and the software that ran on them. As you'll see from the git history the only directory that I've touched in the last 13 years is thor (I just reviewed the json and time(tt) tasks to get them running)
+This directory contains tools that were created to manage Gilmation servers and the software that ran on them. As you'll see from the git history the only directory that I've touched in the last 13 years is thor. I just reviewed the json and time(tt) tasks to get them running.
 
 #### At the present time there are three directories:
 * Scripts - Bootstrap scripts and other utilities written in bash.
