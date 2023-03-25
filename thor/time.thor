@@ -6,22 +6,22 @@ require 'fileutils'
 class Tt < Thor
   include Thor::Actions
 
-  def self.source_root 
+  def self.source_root
     File.dirname(__FILE__)
   end
 
-  desc("add_time", "Add time worked to a project")
-  method_option(:file, :default => "time", :type => :string, :aliases => "-f")
+  desc "add_time", "Add time worked to a project"
+  option :file, :default => "time", :type => :string, :aliases => "-f"
   def add_time
     default_date = Time.now.strftime("%d/%m/%y")
-    date = ask("Enter the date or hit enter [#{default_date}]:") 
+    date = ask("Enter the date or hit enter [#{default_date}]:")
     if(date.nil? || date.empty?)
       date = default_date
     end
 
     stime = ask("Enter the start time [hh:mm]:")
-    stime = ask("No start time entered, try again [hh:mm]") unless stime
-    throw("No start time entered, bailing out") unless stime
+    stime = ask("No start time entered, try again [hh:mm]") if stime.nil? || stime.empty?
+    throw("No start time entered, bailing out") if stime.nil? || stime.empty?
 
     end_time = Time.now.strftime("%H:%M")
     etime = ask("Enter the end time or hit enter [#{end_time}]:")
@@ -37,8 +37,8 @@ class Tt < Thor
     start_list = stime.split(":")
     end_list = etime.split(":")
 
-    puts(" [#{start_list}]") 
-    puts(" [#{end_list}]") 
+    puts(" [#{start_list}]")
+    puts(" [#{end_list}]")
 
     hours = end_list[0].to_i - start_list[0].to_i
     mins = end_list[1].to_i - start_list[1].to_i
@@ -58,11 +58,11 @@ class Tt < Thor
     append_file(options[:file], "#{date} | #{stime} => #{etime} | #{hours}:#{mins} | #{comment}\n")
   end
 
-  desc("total_time", "Add up the total time that has been worked")
-  method_option(:file, :default => "time", :type => :string, :aliases => "-f")
+  desc "total_time", "Add up the total time that has been worked"
+  option :file, :default => "time", :type => :string, :aliases => "-f"
   def total_time
     throw("No file exists at [#{options[:file]}") unless File.exists?(options[:file])
-    
+
     @total_days = 0
     @total_hours = 0
     @total_mins = 0
@@ -71,11 +71,11 @@ class Tt < Thor
 
     # loop through at the values in our time file and add up the hours
     # totals per day and total in the file
-    IO.foreach(options[:file]) do | line | 
+    IO.foreach(options[:file]) do | line |
       entries = line.split("|")
-      #puts(" [#{entries}]")
+      puts(" [#{entries}]")
       entries.each { | entry | entry && entry.strip! }
-      #puts(" [#{entries}]")
+      puts(" [#{entries}]")
       @detail_array << entries
       unless(@dates.include?(entries[0]))
         @total_days += 1

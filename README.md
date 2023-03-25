@@ -1,6 +1,6 @@
 # Gilmation Tools
 
-This directory contains the tools used to manage Gilmation servers and the software that runs on them
+This directory contains tools that were created to manage Gilmation servers and the software that ran on them. As you'll see from the git history the only directory that I've touched in the last 13 years is thor (I just reviewed the json and time(tt) tasks to get them running)
 
 #### At the present time there are three directories:
 * Scripts - Bootstrap scripts and other utilities written in bash.
@@ -16,24 +16,24 @@ The scripts directory contains OS specific scripts that can be used to bootstrap
 2. Copy over the setup script from this directory
 3. Run the setup script
 
-##### setup 
+##### setup
 1. Install the minimum config necesary for a Ruby environment (Ruby and Gems)
 2. Use Gems to install ohai and chef (and their dependencies)
 
 ##### sshSetup
 1. Copy this users public key to the .ssh dir on the given server
 2. Setting up the connection so that it won't ask for a password
-3. NOTE: only for use by someone who knows what they are doing 
+3. NOTE: only for use by someone who knows what they are doing
 
 ##### iptables
 1. Setup the iptables (firewall) for a given ubuntu machine
 
 ## Chef
 
-The chef directory contains a script launch and the chef-repo directory.  
+The chef directory contains a script launch and the chef-repo directory.
 
 ##### launch
-1. Installs the chef cookbooks 
+1. Installs the chef cookbooks
 2. Installs the $HOME/.ee/$PROJECT_NAME_site_node.json file (whcih contains the configuration necessary for this node)
 3. Runs the cookbooks using chef-solo and the $PROJECT_NAME_site_node.json configuration file
 
@@ -49,17 +49,15 @@ These are opscode / 37 signals cookbooks that have not been modified and can be 
 ##### site-cookbooks
 This directory contains the gilmation specific cookbooks that we run in order to configure the standard gilmation.com server.
 
-The recipe that does most of the hard yards here is - gilmation_ee/recipes/default.rb.  This recipe calls the other site specific recipes and as well as installing the software necessary for gilmation.com it also prepares directories so that we can deploy the Expression Engine code easily with Capistrano and administer the Database with Thor.  
+The recipe that does most of the hard yards here is - gilmation_ee/recipes/default.rb.  This recipe calls the other site specific recipes and as well as installing the software necessary for gilmation.com it also prepares directories so that we can deploy the Expression Engine code easily with Capistrano and administer the Database with Thor.
 
 ## Thor
 
-Thor is a gem that allows you to write scripts in ruby (like rake) but then install them and have them available to you wherever you are on a given box.  
+Thor is a gem that allows you to write scripts in ruby (like rake) but then install them and have them available to you wherever you are on a given box.
 
 You can see a list of all the tasks and their descriptions (like Rake or Capistrano), by typing:
 
-    thor -T 
-
-Of interest to us at the moment are the 5 files that we need to install onto the standard gilmation.com server:
+    thor -T  or thor list
 
 ##### ee.thor
 A list of tasks for deployment, backups and restore of Expression Engine and it's Database.
@@ -68,7 +66,7 @@ A list of tasks for deployment, backups and restore of Expression Engine and it'
 
 1. Download the EE2 codebase and install it in your development area
 2. Define a config file for your project at ~/.ee/$PROJECT_NAME.yml
-3. Run 
+3. Run
 
     thor ee:deploy_local -f $PROJECT_NAME.yml
 
@@ -80,12 +78,12 @@ A list of tasks for deployment, backups and restore of Expression Engine and it'
     /usr/bin/mysqladmin -u root -p$PASSWORD create $DB_NAME
     GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP ON $DB_NAME.* to '$USERNAME' IDENTIFIED BY '$PASSWORD'
 
-8. Create a .gitignore file with 
+8. Create a .gitignore file with
 
     thor ee:create_gitignore -f $PROJECT_NAME.yml
 
 9. Run the EE2 install (http://$SERVER_NAME/$SYSTEM_DIR)
-10. Run the Thor task to move the configuration files that have just been updated and create symbolic links to them: 
+10. Run the Thor task to move the configuration files that have just been updated and create symbolic links to them:
 
     thor ee:move_link_config -f $PROJECT_NAME.yml
 
@@ -96,17 +94,20 @@ A couple of generic methods for use by other gilmation projects.
 Mysql specific tasks
 
 ##### s3.thor
-Amazon S3 tasks - upload and retrieve.
+Amazon S3 tasks - upload and retrieve. - Added .bk extension to exclude file as it seems that the right_aws gem hasn't been updated since 2013.
+
+##### time.thor (and time.tt)
+Some very simple time tracking helpers and a template to produce a report
 
 ##### utils.rb
-Does exactly what is says on the tin…  Utility / Helper methods. 
+Does exactly what is says on the tin…  Utility / Helper methods
 
 ## Test procedure with a clean install ubuntu
 
 Check the version of the installed OS(either in a local window or ssh into the box):
-  
+
     cat /etc/issue; cat /etc/lsb-release
-    
+
 Change into the scripts/ubuntu_bootstrap directory
 
     cd scripts/ubuntu_bootstrap
