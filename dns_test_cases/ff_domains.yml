@@ -1,0 +1,33 @@
+domains:
+  foulfashion.com.au:
+    ip: 109.234.204.214
+    code: 301
+    redirect: www.foulfashion.com.au
+  www.foulfashion.com.au:
+    ip: 109.234.204.214
+    code: 200
+    dns_redirect: foulfashion.com.au
+  foulfashion.com:
+    ip: 109.234.204.214
+    code: 301
+    redirect: www.foulfashion.com
+  www.foulfashion.com:
+    ip: 109.234.204.214
+    code: 200
+    dns_redirect: foulfashion.com
+  foulfashion.co.uk:
+    ip: 109.234.204.214
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.co.uk:
+    ip: 109.234.204.214
+    code: 200
+    dns_redirect: foulfashion.co.uk
+  foulfashioncanada.com:
+    ip: 109.234.204.214
+    code: 301
+    redirect: www.foulfashioncanada.com
+  www.foulfashioncanada.com:
+    ip: 109.234.204.214
+    code: 200
+    dns_redirect: foulfashioncanada.com

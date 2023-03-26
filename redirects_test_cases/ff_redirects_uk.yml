@@ -1,0 +1,25 @@
+resources:
+  www.foulfashion.co.uk/foulfashion/foul-fashion-shirt:
+    code: 301
+    redirect: www.foulfashion.co.uk/foul-fashion-shirt
+  www.foulfashion.co.uk/foulfashion/foul-fashion-blazer:
+    code: 301
+    redirect: www.foulfashion.co.uk/foul-fashion-blazer
+  www.foulfashion.co.uk/foulfashion/foul-fashion-waistcoat:
+    code: 301
+    redirect: www.foulfashion.co.uk/foul-fashion-waistcoat
+  www.foulfashion.co.uk/foulfashion/foul-fashion-trousers:
+    code: 301
+    redirect: www.foulfashion.co.uk/foul-fashion-trousers
+  www.foulfashion.co.uk/foulfashion/foul-fashion-shorts:
+    code: 301
+    redirect: www.foulfashion.co.uk/foul-fashion-short
+  www.foulfashion.co.uk/accessories/foul-fashion-tie:
+    code: 301
+    redirect: www.foulfashion.co.uk/foul-fashion-tie
+  www.foulfashion.co.uk/accessories/foul-fashion-hat:
+    code: 301
+    redirect: www.foulfashion.co.uk/foul-fashion-hat
+  www.foulfashion.co.uk/accessories/foul-fashion-socks:
+    code: 301
+    redirect: www.foulfashion.co.uk/foul-fashion-socks

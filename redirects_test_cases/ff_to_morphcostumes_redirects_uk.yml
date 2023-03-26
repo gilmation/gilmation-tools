@@ -1,0 +1,79 @@
+resources:
+  www.foulfashion.co.uk/foul-fashion:
+    code: 301
+    redirect: www.morphsuits.co.uk/brands/foul-fashion-costumes
+  www.foulfashion.co.uk/accessories:
+    code: 301
+    redirect: www.morphsuits.co.uk/brands/foul-fashion-costumes
+  www.foulfashion.co.uk/boys:
+    code: 301
+    redirect: www.morphsuits.co.uk/brands/foul-fashion-costumes
+  www.foulfashion.co.uk/girls:
+    code: 301
+    redirect: www.morphsuits.co.uk/brands/foul-fashion-costumes
+  www.foulfashion.co.uk/foul-fashion-shirt:
+    code: 301
+    redirect: www.morphsuits.co.uk/foul-fashion-shirt
+  www.foulfashion.co.uk/foul-fashion-blazer:
+    code: 301
+    redirect: www.morphsuits.co.uk/foul-fashion-blazer
+  www.foulfashion.co.uk/foul-fashion-waistcoat:
+    code: 301
+    redirect: www.morphsuits.co.uk/foul-fashion-waistcoat
+  www.foulfashion.co.uk/foul-fashion-trousers:
+    code: 301
+    redirect: www.morphsuits.co.uk/foul-fashion-trousers
+  www.foulfashion.co.uk/foul-fashion-shorts:
+    code: 301
+    redirect: www.morphsuits.co.uk/foul-fashion-shorts
+  www.foulfashion.co.uk/foul-fashion-tie:
+    code: 301
+    redirect: www.morphsuits.co.uk/foul-fashion-tie
+  www.foulfashion.co.uk/foul-fashion-hat:
+    code: 301
+    redirect: www.morphsuits.co.uk/foul-fashion-hat
+  www.foulfashion.co.uk/girls-foul-fashion-shirt:
+    code: 301
+    redirect: www.morphsuits.co.uk/girls-foul-fashion-shirt
+  www.foulfashion.co.uk/girls-foul-fashion-blazer:
+    code: 301
+    redirect: www.morphsuits.co.uk/girls-foul-fashion-blazer
+  www.foulfashion.co.uk/girls-foul-fashion-dress:
+    code: 301
+    redirect: www.morphsuits.co.uk/girls-foul-fashion-dress
+  www.foulfashion.co.uk/girls-foul-fashion-waistcoat:
+    code: 301
+    redirect: www.morphsuits.co.uk/girls-foul-fashion-waistcoat
+  www.foulfashion.co.uk/girls-foul-fashion-shorts:
+    code: 301
+    redirect: www.morphsuits.co.uk/girls-foul-fashion-shorts
+  www.foulfashion.co.uk/girls-foul-fashion-leggings:
+    code: 301
+    redirect: www.morphsuits.co.uk/girls-foul-fashion-leggings
+  www.foulfashion.co.uk/about:
+    code: 301
+    redirect: www.morphsuits.co.uk/brands/foul-fashion-costumes
+  www.foulfashion.co.uk/faqs:
+    code: 301
+    redirect: www.morphsuits.co.uk/morph-costumes-faqs
+  www.foulfashion.co.uk/testimonials:
+    code: 301
+    redirect: www.morphsuits.co.uk/morph-costumes-press
+  www.foulfashion.co.uk/safe-shopping:
+    code: 301
+    redirect: www.morphsuits.co.uk/morph-costumes-security
+  www.foulfashion.co.uk/size-guide:
+    code: 301
+    redirect: www.morphsuits.co.uk/guides
+  www.foulfashion.co.uk/terms:
+    code: 301
+    redirect: www.morphsuits.co.uk/terms
+  www.foulfashion.co.uk/privacy:
+    code: 301
+    redirect: www.morphsuits.co.uk/privacy
+  www.foulfashion.co.uk/delivery-returns:
+    code: 301
+    redirect: www.morphsuits.co.uk/delivery-returns
+  www.foulfashion.co.uk/delivery-in-detail:
+    code: 301
+    redirect: www.morphsuits.co.uk/delivery-in-detail

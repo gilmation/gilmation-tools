@@ -1,0 +1,257 @@
+domains:
+  foul-fashion.com.au:
+    ip: 109.234.202.94
+    code: 301
+    redirect: www.foulfashion.com.au
+  www.foul-fashion.com.au:
+    ip: 109.234.202.94
+    code: 301
+    dns_redirect: foul-fashion.com.au
+  fowlfashion.com.au:
+    ip: 109.234.202.94
+    code: 301
+    redirect: www.foulfashion.com.au
+  www.fowlfashion.com.au:
+    ip: 109.234.202.94
+    code: 301
+    dns_redirect: fowlfashion.com.au
+  fowl-fashion.com.au:
+    ip: 109.234.202.94
+    code: 301
+    redirect: www.foulfashion.com.au
+  www.fowl-fashion.com.au:
+    ip: 109.234.202.94
+    code: 301
+    dns_redirect: fowl-fashion.com.au
+  fowlfashion.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.fowlfashion.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: fowlfashion.com
+  fowl-fashion.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.fowl-fashion.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: fowl-fashion.com
+  foul-fashion.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.foul-fashion.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: foul-fashion.com
+  fowlfashioncanada.com:
+    ip: 109.234.202.95
+    code: 301
+    redirect: www.foulfashioncanada.com
+  www.fowlfashioncanada.com:
+    ip: 109.234.202.95
+    code: 301
+    dns_redirect: fowlfashioncanada.com
+  fowl-fashion-canada.com:
+    ip: 109.234.202.95
+    code: 301
+    redirect: www.foulfashioncanada.com
+  www.fowl-fashion-canada.com:
+    ip: 109.234.202.95
+    code: 301
+    dns_redirect: fowl-fashion-canada.com
+  foul-fashion-canada.com:
+    ip: 109.234.202.95
+    code: 301
+    redirect: www.foulfashioncanada.com
+  www.foul-fashion-canada.com:
+    ip: 109.234.202.95
+    code: 301
+    dns_redirect: foul-fashion-canada.com
+  fowlfashion.co.uk:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.fowlfashion.co.uk:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: fowlfashion.co.uk
+  fowl-fashion.co.uk:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.fowl-fashion.co.uk:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: fowl-fashion.co.uk
+  foul-fashion.co.uk:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foul-fashion.co.uk:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foul-fashion.co.uk
+  foulshorts.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.foulshorts.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: foulshorts.com
+  foulcaps.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.foulcaps.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: foulcaps.com
+  foulsocks.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.foulsocks.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: foulsocks.com
+  foulsuits.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.foulsuits.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: foulsuits.com
+  foulfashion.com.br:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.com.br:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.com.br
+  foulfashion.be:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.be:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.be
+  foulfashion.hk:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.hk:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.hk
+  foulfashion.com.hk:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.com.hk:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.com.hk
+  foulfashion.mx:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.mx:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.mx
+  foulfashion.com.mx:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.com.mx:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.com.mx
+  foulfashion.co.nz:
+    ip: 109.234.202.94
+    code: 301
+    redirect: www.foulfashion.com.au
+  www.foulfashion.co.nz:
+    ip: 109.234.202.94
+    code: 301
+    dns_redirect: foulfashion.co.nz
+  foulfashion.de:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.de:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.de
+  foulfashion.es:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.es:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.es
+  foulfashion.eu:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.eu:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.eu
+  foulfashion.fr:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.fr:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.fr
+  foulfashion.it:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.it:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.it
+  foulfashion.nl:
+    ip: 109.234.202.110
+    code: 301
+    redirect: www.foulfashion.co.uk
+  www.foulfashion.nl:
+    ip: 109.234.202.110
+    code: 301
+    dns_redirect: foulfashion.nl
+  buyfoulfashion.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.buyfoulfashion.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: buyfoulfashion.com
+  buycheapfoulfashion.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.buycheapfoulfashion.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: buycheapfoulfashion.com
+  cheapfoulfashion.com:
+    ip: 109.234.202.93
+    code: 301
+    redirect: www.foulfashion.com
+  www.cheapfoulfashion.com:
+    ip: 109.234.202.93
+    code: 301
+    dns_redirect: cheapfoulfashion.com

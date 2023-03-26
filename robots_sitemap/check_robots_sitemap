@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Check the robots.txt files and the sitemap.xml file that
+# they should reference
+#
+
+sites=''
+
+for s in $sites; do
+  target="http://www.$s/robots.txt"
+  echo
+  echo "Checking [$target]"
+  echo
+  # Get all Sitemap lines from the robots.txt file
+  urls=$(curl $target | grep 'Sitemap' | cut -c 10-)
+  for url in $urls; do
+    # Remove any carriage returns and new lines
+    url=$(echo $url | tr -d '\r\n')
+    echo "Found Sitemap URL [$url]"
+    # The status returned from the Sitemap should be 200
+    status=$(curl -s -o /dev/null -w '%{http_code}' $url)
+    echo "Status for Sitemap [$url] was [$status]"
+  done
+  echo
+  echo "------------------"
+done
